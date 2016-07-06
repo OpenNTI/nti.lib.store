@@ -1,4 +1,4 @@
-import {EventEmitter} from 'events';
+import EventEmitter from 'events';
 import {CHANGE_EVENT} from './Constants';
 
 /**
