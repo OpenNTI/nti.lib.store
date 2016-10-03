@@ -1,6 +1,6 @@
 {
   "name": "nti-lib-store",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Flux store super class implementation",
   "main": "lib/index.js",
   "files": [
@@ -22,9 +22,9 @@
   "author": "nextthought",
   "license": "UNLICENSED",
   "dependencies": {
-      "nti-lib-dispatcher": "^1.0.0",
-      "nti-util-logger": "^1.0.1",
-      "invariant": "^2.1.0"
+    "nti-lib-dispatcher": "^1.0.0",
+    "nti-util-logger": "^1.0.1",
+    "invariant": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.1.0",
