@@ -1,10 +1,5 @@
-.PHONY:
-	clean \
-	check \
-	test
+.PHONY: clean check test
 
-SRC = $(shell find src -name '*.js')
-LIB = $(SRC:src/%.js=lib/%.js)
 LIBDIR = lib
 
 all: node_modules lib
@@ -22,8 +17,5 @@ test: node_modules check
 clean:
 	@rm -rf $(LIBDIR)
 
-lib: $(LIB)
-lib/%.js: src/%.js
-#	@echo babel	$@...
-	@mkdir -p $(@D)
-	babel $< -o $@
+lib: clean
+	@NODE_ENV=rollup rollup -c
