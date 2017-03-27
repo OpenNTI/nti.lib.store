@@ -1,15 +1,24 @@
 {
 	"compact": false,
 	"env": {
-		"development": {
+		"test": {
 			"presets": [
-				"es2015",
+				["env", {
+					"targets": {
+						"node": "current"
+					}
+				}],
 				"stage-1"
 			]
 		},
-		"rollup": {
+		"development": {
 			"presets": [
-				["es2015",{ "modules": false }],
+				["env", {
+					"targets": {
+						"browsers": ["> 1%", "last 2 versions"]
+					},
+					"modules": false
+				}],
 				"stage-1"
 			],
 			"plugins": [
