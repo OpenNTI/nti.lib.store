@@ -1,7 +1,7 @@
 .PHONY: clean check test
 
 LIB = lib
-REPORTs = reports
+REPORTS = reports
 
 all: node_modules lib
 
