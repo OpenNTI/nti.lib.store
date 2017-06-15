@@ -1,29 +1,5 @@
 {
-	"compact": false,
-	"env": {
-		"test": {
-			"presets": [
-				["env", {
-					"targets": {
-						"node": "current"
-					}
-				}],
-				"stage-1"
-			]
-		},
-		"development": {
-			"presets": [
-				["env", {
-					"targets": {
-						"browsers": ["> 1%", "last 2 versions"]
-					},
-					"modules": false
-				}],
-				"stage-1"
-			],
-			"plugins": [
-				"external-helpers"
-			]
-		}
-	}
+	"presets":[
+		"./node_modules/nti-lib-scripts/config/babelrc.js"
+	]
 }
