@@ -41,7 +41,7 @@ Actions.js:
 ```
 import {dispatch} from 'nti-lib-dispatcher';
 
-import {getSomthing} from './Api';
+import {getSomething} from './Api';
 import {LOADED} from './Constants';
 
 export function load () {
