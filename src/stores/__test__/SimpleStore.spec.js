@@ -1,7 +1,7 @@
 /* eslint-env jest */
-import Simple from '../Simple';
+import SimpleStore from '../SimpleStore';
 
-class TestStore extends Simple {
+class TestStore extends SimpleStore {
 	get foo () { return 'bar'; }
 }
 
