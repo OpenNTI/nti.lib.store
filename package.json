@@ -26,9 +26,11 @@
   "author": "nextthought",
   "license": "UNLICENSED",
   "dependencies": {
+    "invariant": "^2.1.0",
     "nti-lib-dispatcher": "^1.0.0",
+    "nti-lib-store-connector": "^0.4.0",
     "nti-util-logger": "^1.0.1",
-    "invariant": "^2.1.0"
+    "react": "*"
   },
   "devDependencies": {
     "nti-lib-scripts": "^1.0.36"
