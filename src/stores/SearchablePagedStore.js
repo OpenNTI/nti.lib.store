@@ -1,6 +1,6 @@
-import Simple from './Simple';
+import SimpleStore from './SimpleStore';
 
-export default class SearchablePagedStore extends Simple {
+export default class SearchablePagedStore extends SimpleStore {
 	constructor () {
 		super();
 
