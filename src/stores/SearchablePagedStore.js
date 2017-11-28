@@ -27,7 +27,7 @@ export default class SearchablePagedStore extends SimpleStore {
 		this.set('loadNextPage', null);
 
 		try {
-			const {items, loadNext} = await (this.searchTerm ? this.loadSearchTerm(this.searchTerm) : this.loadInitial());
+			const {items, loadNext} = await (this.get('searchTerm') ? this.loadSearchTerm(this.searchTerm) : this.loadInitial());
 
 			this.set('items', items);
 			this.set('loadNextPage', loadNext);
