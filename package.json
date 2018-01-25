@@ -28,7 +28,7 @@
   "dependencies": {
     "invariant": "^2.1.0",
     "nti-lib-dispatcher": "^1.0.0",
-    "nti-lib-store-connector": "^0.4.0",
+    "nti-lib-store-connector": "0.x.x",
     "nti-util-logger": "^1.0.1",
     "react": "*"
   },
