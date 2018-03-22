@@ -1,5 +1,6 @@
 import React from 'react';
 import Connector from 'nti-lib-store-connector';
+import {HOC} from 'nti-commons';
 
 const Instance = Symbol('Instance');
 const Data = Symbol('Data');
@@ -21,9 +22,13 @@ export default class SimpleStore {
 		};
 
 		return function (component) {
-			function StoreConnector (props) {
-				return React.createElement(component, {...extraProps, ...props});
+			class StoreConnector extends React.Component {
+				render () {
+					return React.createElement(component, {...extraProps, ...this.props});
+				}
 			}
+
+			HOC.hoistStatics(StoreConnector, component, 'SimpleStoreConnector');
 
 			return Connector.connect(
 				store,
