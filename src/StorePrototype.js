@@ -1,5 +1,5 @@
-import Logger from 'nti-util-logger';
-import AppDispatcher from 'nti-lib-dispatcher';
+import Logger from '@nti/util-logger';
+import AppDispatcher from '@nti/lib-dispatcher';
 
 import TypedEventEmitter from './TypedEventEmitter';
 

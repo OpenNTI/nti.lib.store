@@ -1,6 +1,6 @@
 import React from 'react';
-import Connector from 'nti-lib-store-connector';
-import {HOC} from 'nti-commons';
+import Connector from '@nti/lib-store-connector';
+import {HOC} from '@nti/lib-commons';
 
 const Instance = Symbol('Instance');
 const Data = Symbol('Data');
