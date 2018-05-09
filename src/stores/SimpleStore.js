@@ -21,18 +21,19 @@ export default class SimpleStore {
 			[storeProp]: store
 		};
 
-		return function (component) {
-			class StoreConnector extends React.Component {
-				render () {
-					return React.createElement(component, {...extraProps, ...this.props});
-				}
-			}
+		return function decorator (component) {
+			const cmp = React.forwardRef((props, ref) =>
+				React.createElement(component, {
+					...extraProps,
+					...this.props,
+					ref
+				}));
 
-			HOC.hoistStatics(StoreConnector, component, 'SimpleStoreConnector');
+			HOC.hoistStatics(cmp, component, 'SimpleStoreConnector');
 
 			return Connector.connect(
 				store,
-				StoreConnector,
+				cmp,
 				propMap
 			);
 		};
