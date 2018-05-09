@@ -25,7 +25,7 @@ export default class SimpleStore {
 			const cmp = React.forwardRef((props, ref) =>
 				React.createElement(component, {
 					...extraProps,
-					...this.props,
+					...props,
 					ref
 				}));
 
