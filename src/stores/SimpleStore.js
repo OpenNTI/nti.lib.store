@@ -1,6 +1,10 @@
+import EventEmitter from 'events';
+
 import React from 'react';
 import Connector from '@nti/lib-store-connector';
 import {HOC} from '@nti/lib-commons';
+
+import {ChangeEvent} from './Constants';
 
 const Instances = Symbol('Instances');
 const Singleton = Symbol('Singleton');
@@ -9,15 +13,8 @@ const Data = Symbol('Data');
 const ChangeListeners = Symbol('ChangeListeners');
 const ChangedKeys = Symbol('ChangedKeys');
 
-function callListener (listener, ...args) {
-	try {
-		listener(...args);
-	} catch (e) {
-		console.error('Error in Store onChangeListener: ', e.stack || e.message || e);//eslint-disable-line
-	}
-}
 
-export default class SimpleStore {
+export default class SimpleStore extends EventEmitter {
 	//set to true if you want any connected component to have the same store instance
 	static Singleton = false
 
@@ -74,6 +71,8 @@ export default class SimpleStore {
 	}
 
 	constructor () {
+		super();
+
 		this[ChangeListeners] = new Set([]);
 		this[Data] = {};
 	}
@@ -103,18 +102,16 @@ export default class SimpleStore {
 	emitChange (...args) {
 		clearTimeout(this.emitChangeTimeout);
 
-		for (let listener of this[ChangeListeners]) {
-			callListener(listener, ...args);
-		}
+		this.emit(ChangeEvent, ...args);
 	}
 
 
 	addChangeListener (fn) {
-		this[ChangeListeners].add(fn);
+		this.addListener(ChangeEvent, fn);
 	}
 
 
 	removeChangeListener (fn) {
-		this[ChangeListeners].delete(fn);
+		this.removeListener(ChangeEvent, fn);
 	}
 }

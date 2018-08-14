@@ -2,19 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import SimpleStore from './SimpleStore';
-
-const PropsChangeListeners = Symbol('Prop Change Listeners');
+import {PropsChangeEvent} from './Constants';
 
 const SetBinding = Symbol('Set Binding');
 const Binding = Symbol('Binding');
 
-function callListener (listener, ...args) {
-	try {
-		listener(...args);
-	} catch (e) {
-		console.error('Error in BoundStore onPropsChangeListener: ', e.stack || e.message || e);//eslint-disable-line
-	}
-}
 
 export default class BoundStore extends SimpleStore {
 	static buildConnectorCmp (Component) {
@@ -54,12 +46,6 @@ export default class BoundStore extends SimpleStore {
 	}
 
 
-	constructor () {
-		super();
-
-		this[PropsChangeListeners] = new Set([]);
-	}
-
 
 	[SetBinding] (binding) {
 		const changed = this[Binding] !== binding;
@@ -83,18 +69,16 @@ export default class BoundStore extends SimpleStore {
 
 
 	onPropsChange (props) {
-		for (let listener of this[PropsChangeListeners]) {
-			callListener(listener, props);
-		}
+		this.emit(PropsChangeEvent, props);
 	}
 
 
 	addPropsChangeListner (fn) {
-		this[PropsChangeListeners].add(fn);
+		this.addListener(PropsChangeEvent, fn);
 	}
 
 
 	removePropsChangeListener (fn) {
-		this[PropsChangeListeners].remove(fn);
+		this.removeListener(PropsChangeEvent, fn);
 	}
 }

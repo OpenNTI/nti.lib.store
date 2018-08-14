@@ -2,8 +2,6 @@ const SearchTerm = Symbol('SearchTerm');
 const SearchTimeout = Symbol('SearchTimeout');
 
 export default {
-	ConnectorMethods: ['updateSearchTerm'],
-
 	SEARCH_BUFFER: 300,
 
 	setSearchTerm (term) {
@@ -42,5 +40,5 @@ export default {
 	 * @abstract
 	 * @return {void}
 	 */
-	load() {}
+	load () {}
 };
