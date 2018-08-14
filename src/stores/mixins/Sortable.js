@@ -2,8 +2,6 @@ const SortProperty = Symbol('Sort Property');
 const SortDirection = Symbol('Sort Direction');
 
 export default {
-	ConnectorMethods = ['setStort', 'setSortProperty', 'setSortDiection'],
-
 	setSort (property, direction) {
 		this[SortProperty] = property;
 		this[SortDirection] = direction;
@@ -56,7 +54,7 @@ export default {
 	/**
 	 * Gets called whenever the sort is set
 	 *
-	 * @override
+	 * @abstract
 	 * @return {void}
 	 */
 	load () {}

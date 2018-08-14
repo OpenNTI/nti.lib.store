@@ -39,7 +39,7 @@ export default {
 
 	/**
 	 * Gets called whenever the buffer on searching finishes
-	 * @override
+	 * @abstract
 	 * @return {void}
 	 */
 	load() {}
