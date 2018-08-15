@@ -4,7 +4,7 @@ import React from 'react';
 import Connector from '@nti/lib-store-connector';
 import {HOC} from '@nti/lib-commons';
 
-import {ChangeEvent} from './Constants';
+import {ChangeEvent, Load} from './Constants';
 
 const Instances = Symbol('Instances');
 const Singleton = Symbol('Singleton');
@@ -12,6 +12,8 @@ const Singleton = Symbol('Singleton');
 const Data = Symbol('Data');
 const ChangeListeners = Symbol('ChangeListeners');
 const ChangedKeys = Symbol('ChangedKeys');
+
+const LoadTimeout = Symbol('Load Timeout');
 
 
 export default class SimpleStore extends EventEmitter {
@@ -114,5 +116,17 @@ export default class SimpleStore extends EventEmitter {
 
 	removeChangeListener (fn) {
 		this.removeListener(ChangeEvent, fn);
+	}
+
+
+	[Load] () {
+		if (!this.load) { return; }
+
+		if (!this[LoadTimeout]) {
+			this[LoadTimeout] = setTimeout(() => {
+				this.load();
+				delete this[LoadTimeout];
+			}, 100);
+		}
 	}
 }

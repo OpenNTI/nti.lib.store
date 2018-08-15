@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import SimpleStore from './SimpleStore';
-import {PropsChangeEvent} from './Constants';
+import {PropsChangeEvent, Load} from './Constants';
 
 const SetBinding = Symbol('Set Binding');
 const Binding = Symbol('Binding');
@@ -53,18 +53,13 @@ export default class BoundStore extends SimpleStore {
 		this[Binding] = binding;
 
 		if (changed) {
-			this.load();
+			this[Load]();
 		}
 	}
 
 
 	get binding () {
 		return this[Binding];
-	}
-
-
-	load () {
-		throw new Error('Load MUST be overridden by subclasses of BoundStore check: ', this.constructor.name);
 	}
 
 

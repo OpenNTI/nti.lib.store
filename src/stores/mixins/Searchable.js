@@ -1,3 +1,5 @@
+import {Load} from '../Constants';
+
 const SearchTerm = Symbol('SearchTerm');
 const SearchTimeout = Symbol('SearchTimeout');
 
@@ -26,19 +28,11 @@ export default {
 		clearTimeout(this[SearchTimeout]);
 
 		if (!term) {
-			this.load();
+			this[Load]();
 		} else {
 			this[SearchTimeout] = setTimeout(() => {
-				this.load();
+				this[Load]();
 			}, this.SEARCH_BUFFER);
 		}
-	},
-
-
-	/**
-	 * Gets called whenever the buffer on searching finishes
-	 * @abstract
-	 * @return {void}
-	 */
-	load () {}
+	}
 };

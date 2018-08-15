@@ -1,7 +1,12 @@
+import {Load} from '../Constants';
+
 const SortProperty = Symbol('Sort Property');
 const SortDirection = Symbol('Sort Direction');
 
 export default {
+	defaultSortProperty: null,
+	defaultSortDirection: null,
+
 	setSort (property, direction) {
 		this[SortProperty] = property;
 		this[SortDirection] = direction;
@@ -12,7 +17,7 @@ export default {
 			this.emitChange('sortProperty', 'sortDirection');
 		}
 
-		this.load();
+		this[Load]();
 	},
 
 
@@ -25,7 +30,7 @@ export default {
 			this.emitChange('sortProperty');
 		}
 
-		this.load();
+		this[Load]();
 	},
 
 
@@ -38,24 +43,16 @@ export default {
 			this.emitChange('sortDirection');
 		}
 
-		this.load();
+		this[Load]();
 	},
 
 
 	get sortProperty () {
-		return this[SortProperty];
+		return this[SortProperty] || this.defaultSortProperty;
 	},
 
 
 	get sortDirection () {
-		return this[SortDirection];
-	},
-
-	/**
-	 * Gets called whenever the sort is set
-	 *
-	 * @abstract
-	 * @return {void}
-	 */
-	load () {}
+		return this[SortDirection] || this.defaultSortDirection;
+	}
 };
