@@ -102,11 +102,12 @@ export default class SimpleStore extends EventEmitter {
 	emitChange (...args) {
 		clearTimeout(this.emitChangeTimeout);
 
-		this.emit(ChangeEvent, ...args);
+		this.emit(ChangeEvent, {type: args});
 	}
 
 
 	addChangeListener (fn) {
+		this.removeChangeListener(fn);
 		this.addListener(ChangeEvent, fn);
 	}
 

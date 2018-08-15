@@ -36,7 +36,7 @@ describe('Simple Store', () => {
 		test.emitChange('prop');
 
 		expect(handler.mock.calls.length).toEqual(1);
-		expect(handler.mock.calls[0][0].type).toEqual('prop');
+		expect(handler.mock.calls[0][0].type[0]).toEqual('prop');
 	});
 
 	test('adding a change listener more than once only gets called once', () => {
