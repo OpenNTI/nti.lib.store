@@ -9,6 +9,12 @@ const Binding = Symbol('Binding');
 
 
 export default class BoundStore extends SimpleStore {
+	static validateConnection (Component) {
+		if (Component.deriveStoreKeyFromProps) {
+			throw new Error('Components connected to a bound store cannot define deriveStoreKeyFromProps. Check: ', Component.displayName || Component.name);
+		}
+	}
+
 	static buildConnectorCmp (Component) {
 		const deriveBinding = (props) => Component.deriveBindingFromProps ? Component.deriveBindingFromProps(props) : null;
 
