@@ -36,9 +36,7 @@ export default class BoundStore extends SimpleStore {
 			}
 
 			render () {
-				return (
-					<Component {...this.props} />
-				);
+				return React.createElement(Component, this.props);
 			}
 		}
 
