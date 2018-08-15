@@ -38,7 +38,7 @@
     "react": "*",
     "prop-types": "*",
     "@nti/util-logger": "^1.0.1",
-    "invariant": "^2.1.0",
+    "invariant": "^2.1.0"
   },
   "devDependencies": {
     "@nti/cmp-scripts": "^1.18.67",
