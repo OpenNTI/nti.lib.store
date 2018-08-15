@@ -4,6 +4,16 @@ const SearchTerm = Symbol('SearchTerm');
 const SearchTimeout = Symbol('SearchTimeout');
 
 export default {
+	initMixin () {
+		if (this.addPropsChangeListner) {
+			this.addPropsChangeListner((props) => {
+				if (props.searchTerm !== this.searchTerm) {
+					this.updateSearchTerm(props.searchTerm);
+				}
+			});
+		}
+	},
+
 	SEARCH_BUFFER: 300,
 
 	setSearchTerm (term) {
