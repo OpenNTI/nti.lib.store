@@ -43,7 +43,7 @@ export default class SimpleStore extends EventEmitter {
 
 
 	static connect (propMap, storeProp = 'store') {
-		return function decorator (Component) {
+		return (Component) => {
 			const Wrapper = this.buildConnectorCmp(Component);
 
 			const cmp = React.forwardRef((props, ref) => {
