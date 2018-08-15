@@ -1,3 +1,6 @@
+export * as Mixins from './mixins';
+
+export BoundStore from './BoundStore';
 export PagedBatchStore from './PagedBatchStore';
-export SimpleStore from './SimpleStore';
 export SearchablePagedStore from './SearchablePagedStore';
+export SimpleStore from './SimpleStore';
