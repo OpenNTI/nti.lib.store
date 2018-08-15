@@ -5,6 +5,7 @@ import Connector from '@nti/lib-store-connector';
 import {HOC} from '@nti/lib-commons';
 
 import {ChangeEvent, Load} from './Constants';
+import ContextWrapper from './Context';
 
 const Instances = Symbol('Instances');
 const Singleton = Symbol('Singleton');
@@ -55,7 +56,11 @@ export default class SimpleStore extends EventEmitter {
 			const cmp = React.forwardRef((props, ref) => {
 				const store = this.getStore(Component.deriveStoreKeyFromProps && Component.deriveStoreKeyFromProps(props));
 				const extraProps = {[storeProp]: store};
-				const child = React.createElement(Component, {...extraProps, ref});
+				const child = React.createElement(
+					ContextWrapper,
+					{store},
+					React.createElement(Component, {...extraProps, ref})
+				);
 
 				return React.createElement(
 					Connector,
