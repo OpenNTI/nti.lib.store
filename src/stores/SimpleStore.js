@@ -66,7 +66,9 @@ export default class SimpleStore extends EventEmitter {
 				constructor (props) {
 					super(props);
 
-					this.setupFor(props);
+					this.state = {
+						store: getStore(getStoreKey(props))
+					};
 				}
 
 				componentDidUpdate (props) {
