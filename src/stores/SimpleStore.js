@@ -80,7 +80,9 @@ export default class SimpleStore extends EventEmitter {
 					const {store} = this.state;
 					const key = getStoreKey(props);
 
-					if (!store || store[StoreKey] !== key) {
+					const keyChanged = store[StoreKey] || key ? store[StoreKey] !== key : false;
+
+					if (!store || keyChanged) {
 						this.setState({
 							store: getStore(key)
 						});
