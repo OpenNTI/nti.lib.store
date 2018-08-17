@@ -79,11 +79,13 @@ export default class SimpleStore extends EventEmitter {
 
 				setupFor (props) {
 					const {store} = this.state;
-					const key = getStoreKey(props);
 
+					if (!store || store[StoreKey] === Singleton) { return; }
+
+					const key = getStoreKey(props);
 					const keyChanged = (store[StoreKey] || key) ? store[StoreKey] !== key : false;
 
-					if (!store || keyChanged) {
+					if (keyChanged) {
 						console.log('Setting STORE');//eslint-disable-line
 						this.setState({
 							store: getStore(key)
