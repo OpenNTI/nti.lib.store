@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {HOC} from '@nti/lib-commons';
 
-import {getPropsForMap} from '../../utils';
+import {getPropsForMap} from '../utils';
 import StoreContext from '../Context';
 
 export default class AnyStoreConnector extends React.Component {

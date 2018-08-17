@@ -1,4 +1,4 @@
-import {Load} from '../Constants';
+import {Load} from '../stores/Constants';
 
 const SortProperty = Symbol('Sort Property');
 const SortDirection = Symbol('Sort Direction');

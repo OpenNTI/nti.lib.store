@@ -1,4 +1,4 @@
-import {Load} from '../Constants';
+import {Load} from '../stores/Constants';
 
 const SearchTerm = Symbol('SearchTerm');
 const SearchTimeout = Symbol('SearchTimeout');

@@ -4,9 +4,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {HOC} from '@nti/lib-commons';
 
-import InstanceConnector from './connectors/Store';
+import {Instance as InstanceConnector} from '../connectors';
+import ContextWrapper from '../Context';
+
 import {ChangeEvent, Load} from './Constants';
-import ContextWrapper from './Context';
 
 const Instances = Symbol('Instances');
 const Singleton = Symbol('Singleton');

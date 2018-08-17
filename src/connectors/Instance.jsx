@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {HOC} from '@nti/lib-commons';
 
-import {getPropsForMap} from '../../utils';
+import {getPropsForMap} from '../utils';
 
-export default class StoreConnector extends React.Component {
+export default class StoreInstanceConnector extends React.Component {
 	/**
 	 * Used to compose a Component Class. This returns a new Component Type.
 	 *
@@ -22,17 +22,17 @@ export default class StoreConnector extends React.Component {
 	 */
 	static connect (store, Component, propMap, onMount, onUnmount) {
 		const cmp = React.forwardRef((props, ref) => (
-			<StoreConnector
+			<StoreInstanceConnector
 				store={store}
 				propMap={propMap}
 				onMount={onMount}
 				onUnmount={onUnmount}
 			>
 				<Component {...props} ref={ref} />
-			</StoreConnector>
+			</StoreInstanceConnector>
 		));
 
-		return HOC.hoistStatics(cmp, Component, 'StoreConnector');
+		return HOC.hoistStatics(cmp, Component, 'StoreInstanceConnector');
 	}
 
 	static propTypes = {
