@@ -5,8 +5,8 @@ const SearchTimeout = Symbol('SearchTimeout');
 
 export default {
 	initMixin () {
-		if (this.addPropsChangeListner) {
-			this.addPropsChangeListner((props) => {
+		if (this.addPropsChangeListener) {
+			this.addPropsChangeListener((props) => {
 				if (props.searchTerm !== this.searchTerm) {
 					this.updateSearchTerm(props.searchTerm);
 				}
