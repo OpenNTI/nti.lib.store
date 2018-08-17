@@ -72,7 +72,7 @@ export default class BoundStore extends SimpleStore {
 	}
 
 
-	addPropsChangeListner (fn) {
+	addPropsChangeListener (fn) {
 		this.addListener(PropsChangeEvent, fn);
 	}
 
