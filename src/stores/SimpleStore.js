@@ -2,9 +2,9 @@ import EventEmitter from 'events';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Connector from '@nti/lib-store-connector';
 import {HOC} from '@nti/lib-commons';
 
+import InstanceConnector from './connectors/Store';
 import {ChangeEvent, Load} from './Constants';
 import ContextWrapper from './Context';
 
@@ -95,17 +95,20 @@ export default class SimpleStore extends EventEmitter {
 					const {store} = this.state;
 
 					const child = React.createElement(
-						ContextWrapper,
-						{store},
-						React.createElement(Component, {...otherProps, [storeProp]: store, ref: forwardRef})
+						Component,
+						{...otherProps, [storeProp]: store, ref: forwardRef}
 					);
 
 					return React.createElement(
-						Connector,
-						{_store: store, _propMap: propMap},
-						Wrapper ?
-							React.createElement(Wrapper, {store}, child) :
-							child
+						ContextWrapper,
+						{store: store},
+						React.createElement(
+							InstanceConnector,
+							{store: store, propMap},
+							Wrapper ?
+								React.createElement(Wrapper, {store}, child) :
+								child
+						)
 					);
 				}
 			}
