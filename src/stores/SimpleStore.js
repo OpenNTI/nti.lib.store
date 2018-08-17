@@ -130,6 +130,10 @@ export default class SimpleStore extends EventEmitter {
 		super();
 
 		this[Data] = {};
+
+		if (this.initMixins) {
+			this.initMixins();
+		}
 	}
 
 
