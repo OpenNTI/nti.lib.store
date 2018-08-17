@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const StoreContext = React.createContext({stores: []});
 
 
-export class StoreContextWrapper extends React.Component {
+export default class StoreContextWrapper extends React.Component {
 	static Consumer = StoreContext.Consumer
 
 	static propTypes = {
