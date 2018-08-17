@@ -14,7 +14,7 @@ export class StoreContextWrapper extends React.Component {
 
 
 	render () {
-		const {store, children} = this.props;
+		const {store, children, ...otherProps} = this.props;
 
 		return (
 			<StoreContext.Consumer>
@@ -24,7 +24,7 @@ export class StoreContextWrapper extends React.Component {
 
 						return (
 							<StoreContext.Provider value={context}>
-								{children}
+								{React.cloneElement(React.Children.only(children), otherProps)}
 							</StoreContext.Provider>
 						);
 					}
