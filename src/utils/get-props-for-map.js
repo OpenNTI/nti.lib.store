@@ -13,7 +13,7 @@ function findStoreWithValue (stores, key) {
 		}
 	}
 
-	return null;
+	return {};
 }
 
 export default function getPropsForMap (stores, propMap) {
