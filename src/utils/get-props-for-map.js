@@ -28,17 +28,18 @@ export default function getPropsForMap (stores, propMap) {
 	const props = {};
 
 	for (let key of keys) {
-		if (typeof propMap[key] === 'string') {
-			const propKey = propMap[key];
+		if (typeof normalized[key] === 'string') {
+			const propKey = normalized[key];
 			const {store, value} = findStoreWithValue(check, key);
+
 
 			if (typeof value === 'function') {
 				props[propKey] = getBoundFunction(value, store);
 			} else {
 				props[propKey] = value;
 			}
-		} else if (typeof key === 'string' && propMap[key] != null) {
-			props[key] = propMap[key];
+		} else if (typeof key === 'string' && normalized[key] != null) {
+			props[key] = normalized[key];
 		}
 	}
 
