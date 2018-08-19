@@ -112,10 +112,19 @@ export default class StoreInstanceConnector extends React.Component {
 		}
 	}
 
+	componentDidUpdate (prevProps) {
+		const {store} = this.props;
+		const {store: prevStore} = prevProps;
+
+		if (store !== prevStore) {
+			this.subscribe(store);
+		}
+	}
+
 
 	subscribe (store) {
 		if (this.unsubscribe) {
-			this.ubsubscribe();
+			this.unsubscribe();
 		}
 
 		store.addChangeListener(this.onStoreChange);
@@ -134,7 +143,7 @@ export default class StoreInstanceConnector extends React.Component {
 			return;
 		}
 
-		if (shouldUpdateForChange(change)) {
+		if (shouldUpdateForChange(change, this.props.propMap)) {
 			this.forceUpdate();
 		}
 	}
