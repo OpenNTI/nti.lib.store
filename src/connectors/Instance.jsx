@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {HOC} from '@nti/lib-commons';
 
-import {getPropsForMap} from '../utils';
+import {getPropsForMap, normalizePropMap} from '../utils';
 
 export default class StoreInstanceConnector extends React.Component {
 	/**
@@ -125,6 +125,7 @@ export default class StoreInstanceConnector extends React.Component {
 
 
 	onStoreChange = ({type} = {}) => {
+
 		if (this.unmounted) {
 			if (this.unsubscribe) {
 				this.unsubscribe();
@@ -143,7 +144,9 @@ export default class StoreInstanceConnector extends React.Component {
 			type = [type];
 		}
 
-		const shouldUpdate = !propMap || type.some(prop => propMap.hasOwnProperty(prop));
+		const normalized = propMap && normalizePropMap(propMap);
+
+		const shouldUpdate = !normalized || type.some(prop => normalized.hasOwnProperty(prop));
 
 		if (shouldUpdate) {
 			this.forceUpdate();
