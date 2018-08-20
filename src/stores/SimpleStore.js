@@ -148,23 +148,41 @@ export default class SimpleStore extends EventEmitter {
 
 
 	set (key, value) {
-		this[Data][key] = value;
-
 		this[ChangedKeys] = this[ChangedKeys] || [];
+
+		if (typeof key === 'object') {
+			this[Data] = {...this[Data], ...key};
+			this[ChangedKeys] = [...this[ChangedKeys], ...Object.keys(key)];
+		} else {
+			this[Data][key] = value;
+			this[ChangedKeys] = [...this[ChangedKeys], key];
+		}
+
 
 		if (this.emitChangeTimeout) { return; }
 
 		this.emitChangeTimeout = setTimeout(() => {
-			this.emitChange(...this[ChangedKeys]);
-			this[ChangedKeys] = null;
+			this.emitChange();
 		}, 100);
 	}
 
 
-	emitChange (...args) {
+	emitChange (changedType) {
 		clearTimeout(this.emitChangeTimeout);
 
-		this.emit(ChangeEvent, {type: args});
+		if (!changedType) {
+			changedType = [];
+		} else if (!Array.isArray(changedType)) {
+			changedType = [changedType];
+		}
+
+		const type = this[ChangedKeys] ? [...changedType, ...this[ChangedKeys]] : changedType;
+
+		this.emit(ChangeEvent, {
+			type: type.length > 1 ? type : type[0]
+		});
+
+		this[ChangedKeys] = null;
 	}
 
 
