@@ -27,7 +27,7 @@ export default class MultipleInstanceConnector extends React.Component {
 			PropTypes.shape({
 				get: PropTypes.func.isRequired,
 				addChangeListener: PropTypes.func.isRequired,
-				removeChangelistener: PropTypes.func.isRequired
+				removeChangeListener: PropTypes.func.isRequired
 			})
 		),
 		propMap: PropTypes.oneOfType([
@@ -77,7 +77,7 @@ export default class MultipleInstanceConnector extends React.Component {
 
 		this.unsubscribe = () => {
 			for (let store of stores) {
-				store.removeChangelistener(this.onStoreChange);
+				store.removeChangeListener(this.onStoreChange);
 			}
 
 			delete this.unsubscribe;
@@ -93,7 +93,6 @@ export default class MultipleInstanceConnector extends React.Component {
 
 			return;
 		}
-
 
 		if (shouldUpdateForChange(change, this.props.propMap)) {
 			this.forceUpdate();

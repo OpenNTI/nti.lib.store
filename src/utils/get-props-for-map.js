@@ -21,7 +21,7 @@ export default function getPropsForMap (stores, propMap) {
 		stores = [stores];
 	}
 
-	const check = stores.reverse();
+	const check = [...stores].reverse();
 	const normalized = normalizePropmap(propMap);
 	const keys = Object.keys(normalized);
 
@@ -31,7 +31,6 @@ export default function getPropsForMap (stores, propMap) {
 		if (typeof normalized[key] === 'string') {
 			const propKey = normalized[key];
 			const {store, value} = findStoreWithValue(check, key);
-
 
 			if (typeof value === 'function') {
 				props[propKey] = getBoundFunction(value, store);

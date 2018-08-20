@@ -1,0 +1,118 @@
+/* eslint-env jest */
+import React from 'react';
+import {mount} from 'enzyme';
+import TestRenderer from 'react-test-renderer';
+
+import MultipleInstanceConnector from '../MultipleInstance';
+
+import {InnerCmp, buildStore} from './Common';
+
+class TestCmp extends React.Component {
+	render () {
+		return (
+			<MultipleInstanceConnector {...this.props}>
+				<InnerCmp />
+			</MultipleInstanceConnector>
+		);
+	}
+}
+
+describe('Multiple Instance Connector', () => {
+	describe('connect', () => {
+
+	});
+
+	describe('High Order Component', () => {
+		test('Adds change listener to all stores and removes them on unmount', () => {
+			const stores = [
+				buildStore({}),
+				buildStore({}),
+				buildStore({})
+			];
+
+			const testRenderer = TestRenderer.create((
+				<TestCmp
+					stores={stores}
+					propMap={{}}
+				/>
+			));
+
+			for (let store of stores) {
+				expect(store.getListenerCount()).toEqual(1);
+			}
+
+			testRenderer.unmount();
+
+			for (let store of stores) {
+				expect(store.getListenerCount()).toEqual(0);
+			}
+
+		});
+
+		test('Passes existing store props with correct hierarchy (last to first) on initial render', () => {
+			const stores = [
+				buildStore({store1: 'store1', sharedKey1: 'sharedKey1-1', sharedKey2: 'sharedKey2-1'}),
+				buildStore({store2: 'store2', sharedKey1: 'sharedKey1-2', sharedKey2: 'sharedKey2-2'}),
+				buildStore({store3: 'store3', sharedKey1: 'sharedKey1-3'})
+			];
+
+			const testRenderer = TestRenderer.create((
+				<TestCmp
+					stores={stores}
+					propMap={['store1', 'store2', 'store3', 'sharedKey1', 'sharedKey2']}
+				/>
+			));
+			const testRoot = testRenderer.root;
+
+			const innerCmp = testRoot.findByType(InnerCmp);
+
+			expect(innerCmp.props.store1).toEqual('store1');
+			expect(innerCmp.props.store2).toEqual('store2');
+			expect(innerCmp.props.store3).toEqual('store3');
+			expect(innerCmp.props.sharedKey1).toEqual('sharedKey1-3');
+			expect(innerCmp.props.sharedKey2).toEqual('sharedKey2-2');
+		});
+
+		test('Passes new store props when any of the stores change', () => {
+			const stores = [
+				buildStore({key1: 'initial1'}),
+				buildStore({key2: 'initial2'}),
+				buildStore({key3: 'initial3'})
+			];
+
+			const testCmp = mount((
+				<TestCmp
+					stores={stores}
+					propMap={['key1', 'key2', 'key3']}
+				/>
+			));
+
+			const innerCmp = testCmp.find(InnerCmp);
+
+			expect(innerCmp.prop('key1')).toEqual('initial1');
+			expect(innerCmp.prop('key2')).toEqual('initial2');
+			expect(innerCmp.prop('key3')).toEqual('initial3');
+
+			stores[0].set('key1', 'updated1');
+			stores[0].fireChange('key1');
+
+			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
+			expect(innerCmp.instance().updatedProps.key2).toEqual('initial2');
+			expect(innerCmp.instance().updatedProps.key3).toEqual('initial3');
+
+			stores[1].set('key2', 'updated2');
+			stores[1].fireChange('key2');
+
+			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
+			expect(innerCmp.instance().updatedProps.key2).toEqual('updated2');
+			expect(innerCmp.instance().updatedProps.key3).toEqual('initial3');
+
+			stores[2].set('key3', 'updated3');
+			stores[2].fireChange('key3');
+
+			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
+			expect(innerCmp.instance().updatedProps.key2).toEqual('updated2');
+			expect(innerCmp.instance().updatedProps.key3).toEqual('updated3');
+		});
+	});
+});
