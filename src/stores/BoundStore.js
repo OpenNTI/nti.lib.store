@@ -22,7 +22,8 @@ export default class BoundStore extends SimpleStore {
 			static propTypes = {
 				store: PropTypes.shape({
 					onPropsChange: PropTypes.func.isRequired
-				}).isRequired
+				}).isRequired,
+				children: PropTypes.any
 			}
 
 			componentDidMount () {
@@ -42,7 +43,7 @@ export default class BoundStore extends SimpleStore {
 			}
 
 			render () {
-				return React.createElement(Component, this.props);
+				return this.props.children;
 			}
 		}
 

@@ -45,6 +45,13 @@ export default class SimpleStore extends EventEmitter {
 	}
 
 
+	/**
+	 * Create a component to render around the InstanceConnector
+	 * it MUST render its children!
+	 *
+	 * @param  {Object} Component the class of the component that is being connected
+	 * @return {Object}           the wrapper component to render
+	 */
 	static buildConnectorCmp (Component) {}
 
 	static validateConnection (Component) {}
@@ -72,8 +79,8 @@ export default class SimpleStore extends EventEmitter {
 					};
 				}
 
-				componentDidUpdate (props) {
-					this.setupFor(props);
+				componentDidUpdate () {
+					this.setupFor(this.props);
 				}
 
 
@@ -86,7 +93,6 @@ export default class SimpleStore extends EventEmitter {
 					const keyChanged = (store[StoreKey] || key) ? store[StoreKey] !== key : false;
 
 					if (keyChanged) {
-						console.log('Setting STORE');//eslint-disable-line
 						this.setState({
 							store: getStore(key)
 						});
@@ -137,6 +143,10 @@ export default class SimpleStore extends EventEmitter {
 		if (this.initMixins) {
 			this.initMixins();
 		}
+	}
+
+	get storeKey () {
+		return this[StoreKey];
 	}
 
 
