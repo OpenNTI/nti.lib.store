@@ -8,6 +8,8 @@ export default class StoreInstanceConnector extends React.Component {
 	/**
 	 * Used to compose a Component Class. This returns a new Component Type.
 	 *
+	 * TODO: change the connect to be a decorator like the other connectors
+	 *
 	 * @param  {Object}   store     The store to connect to.
 	 * @param  {Class}    Component The component to compose & wire to store updates.
 	 * @param  {Object}   propMap   mapping of key from store to a a prop name.
