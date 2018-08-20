@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import React from 'react';
 // import PropTypes from 'prop-types';
-import {mount} from 'enzyme';
+// import {mount} from 'enzyme';
 import TestRenderer from 'react-test-renderer';
 
 import InstanceConnector from '../Instance';
@@ -111,24 +111,25 @@ describe('Instance Connector', () => {
 
 		test('Passes new store props on change event', () => {
 			const store = buildStore({key1: 'initial1', key2: 'initial2'});
-			const testCmp = mount((
+
+			const testRenderer = TestRenderer.create((
 				<TestCmp
 					store={store}
 					propMap={['key1', 'key2']}
 				/>
 			));
 
-			const innerCmp = testCmp.find(InnerCmp);
+			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
-			expect(innerCmp.prop('key1')).toEqual('initial1');
-			expect(innerCmp.prop('key2')).toEqual('initial2');
+			expect(innerCmp.props.key1).toEqual('initial1');
+			expect(innerCmp.props.key2).toEqual('initial2');
 
 			store.set('key1', 'updated1');
 			store.set('key2', 'updated2');
 			store.fireChange(['key1', 'key2']);
 
-			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
-			expect(innerCmp.instance().updatedProps.key2).toEqual('updated2');
+			expect(innerCmp.props.key1).toEqual('updated1');
+			expect(innerCmp.props.key2).toEqual('updated2');
 		});
 	});
 });

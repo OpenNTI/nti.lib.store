@@ -3,12 +3,6 @@ import React from 'react';
 export class InnerCmp extends React.Component {
 	static staticMethod = () => {}
 
-	componentDidUpdate (prevProps) {
-		if (prevProps !== this.props) {
-			this.updatedProps = this.props;//this is a workaround for enzyme being a jerk and not updating the prop
-		}
-	}
-
 	render () {
 		return (
 			<div>

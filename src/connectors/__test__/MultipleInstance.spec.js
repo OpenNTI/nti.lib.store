@@ -1,6 +1,5 @@
 /* eslint-env jest */
 import React from 'react';
-import {mount} from 'enzyme';
 import TestRenderer from 'react-test-renderer';
 
 import MultipleInstanceConnector from '../MultipleInstance';
@@ -80,39 +79,39 @@ describe('Multiple Instance Connector', () => {
 				buildStore({key3: 'initial3'})
 			];
 
-			const testCmp = mount((
+			const testRenderer = TestRenderer.create((
 				<TestCmp
 					stores={stores}
 					propMap={['key1', 'key2', 'key3']}
 				/>
 			));
 
-			const innerCmp = testCmp.find(InnerCmp);
+			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
-			expect(innerCmp.prop('key1')).toEqual('initial1');
-			expect(innerCmp.prop('key2')).toEqual('initial2');
-			expect(innerCmp.prop('key3')).toEqual('initial3');
+			expect(innerCmp.props.key1).toEqual('initial1');
+			expect(innerCmp.props.key2).toEqual('initial2');
+			expect(innerCmp.props.key3).toEqual('initial3');
 
 			stores[0].set('key1', 'updated1');
 			stores[0].fireChange('key1');
 
-			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
-			expect(innerCmp.instance().updatedProps.key2).toEqual('initial2');
-			expect(innerCmp.instance().updatedProps.key3).toEqual('initial3');
+			expect(innerCmp.props.key1).toEqual('updated1');
+			expect(innerCmp.props.key2).toEqual('initial2');
+			expect(innerCmp.props.key3).toEqual('initial3');
 
 			stores[1].set('key2', 'updated2');
 			stores[1].fireChange('key2');
 
-			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
-			expect(innerCmp.instance().updatedProps.key2).toEqual('updated2');
-			expect(innerCmp.instance().updatedProps.key3).toEqual('initial3');
+			expect(innerCmp.props.key1).toEqual('updated1');
+			expect(innerCmp.props.key2).toEqual('updated2');
+			expect(innerCmp.props.key3).toEqual('initial3');
 
 			stores[2].set('key3', 'updated3');
 			stores[2].fireChange('key3');
 
-			expect(innerCmp.instance().updatedProps.key1).toEqual('updated1');
-			expect(innerCmp.instance().updatedProps.key2).toEqual('updated2');
-			expect(innerCmp.instance().updatedProps.key3).toEqual('updated3');
+			expect(innerCmp.props.key1).toEqual('updated1');
+			expect(innerCmp.props.key2).toEqual('updated2');
+			expect(innerCmp.props.key3).toEqual('updated3');
 		});
 	});
 });
