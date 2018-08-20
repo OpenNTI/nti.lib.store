@@ -160,5 +160,25 @@ describe('Multiple Instance Connector', () => {
 			expect(innerCmp.props.key2).toEqual('updated2');
 			expect(innerCmp.props.key3).toEqual('updated3');
 		});
+
+		test('Doesn\'t update if the change event types aren\'t in the propMap', () => {
+			const stores = [buildStore({key1: 'initial'})];
+
+			const testRenderer = TestRenderer.create((
+				<TestCmp
+					stores={stores}
+					propMap={['key1']}
+				/>
+			));
+
+			const innerCmp = testRenderer.root.findByType(InnerCmp);
+
+			expect(innerCmp.props.key1).toEqual('initial');
+
+			stores[0].set('key1', 'updated');
+			stores[0].fireChange('key2');
+
+			expect(innerCmp.props.key1).toEqual('initial');
+		});
 	});
 });

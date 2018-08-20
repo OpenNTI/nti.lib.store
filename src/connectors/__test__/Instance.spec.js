@@ -148,5 +148,25 @@ describe('Instance Connector', () => {
 			expect(innerCmp.props.key1).toEqual('updated1');
 			expect(innerCmp.props.key2).toEqual('updated2');
 		});
+
+		test('Doesn\'t update if the change event types aren\'t in the propMap', () => {
+			const store = buildStore({key1: 'initial'});
+
+			const testRenderer = TestRenderer.create((
+				<TestCmp
+					store={store}
+					propMap={['key1']}
+				/>
+			));
+
+			const innerCmp = testRenderer.root.findByType(InnerCmp);
+
+			expect(innerCmp.props.key1).toEqual('initial');
+
+			store.set('key1', 'updated');
+			store.fireChange('key2');
+
+			expect(innerCmp.props.key1).toEqual('initial');
+		});
 	});
 });
