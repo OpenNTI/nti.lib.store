@@ -1,7 +1,5 @@
 /* eslint-env jest */
 import React from 'react';
-// import PropTypes from 'prop-types';
-// import {mount} from 'enzyme';
 import TestRenderer from 'react-test-renderer';
 
 import InstanceConnector from '../Instance';
@@ -26,6 +24,23 @@ describe('Instance Connector', () => {
 			expect(connected.staticMethod).toEqual(InnerCmp.staticMethod);
 		});
 
+		test('Connected component passes ref to the inner cmp', () => {
+			const store = buildStore({});
+			const propMap = {};
+
+			let innerCmpRef = null;
+
+			const Connected = InstanceConnector.connect(store, InnerCmp, propMap);
+
+			const testRenderer = TestRenderer.create((
+				<Connected ref={x => innerCmpRef = x} />
+			));
+
+			const innerCmp = testRenderer.root.findByType(InnerCmp);
+
+			expect(innerCmp.instance).toEqual(innerCmpRef);
+		});
+
 		test('Connected component renders the instance connector with appropriate props', () => {
 			const store = buildStore({});
 			const propMap = {};
@@ -35,19 +50,21 @@ describe('Instance Connector', () => {
 			const Connected = InstanceConnector.connect(store, InnerCmp, propMap, onMount, onUnmount);
 
 			const testRenderer = TestRenderer.create((
-				<Connected />
+				<Connected extraProp="foo"/>
 			));
 			const testRoot = testRenderer.root;
 
-			const instanceConnector = testRoot.findByType(InstanceConnector);
+			const connector = testRoot.findByType(InstanceConnector);
 			const innerCmp = testRoot.findByType(InnerCmp);
 
 			expect(innerCmp).toBeDefined();
-			expect(instanceConnector).toBeDefined();
-			expect(instanceConnector.props.store).toEqual(store);
-			expect(instanceConnector.props.propMap).toEqual(propMap);
-			expect(instanceConnector.props.onMount).toEqual(onMount);
-			expect(instanceConnector.props.onUnmount).toEqual(onUnmount);
+			expect(innerCmp.props.extraProp).toEqual('foo');
+
+			expect(connector).toBeDefined();
+			expect(connector.props.store).toEqual(store);
+			expect(connector.props.propMap).toEqual(propMap);
+			expect(connector.props.onMount).toEqual(onMount);
+			expect(connector.props.onUnmount).toEqual(onUnmount);
 		});
 	});
 

@@ -18,7 +18,54 @@ class TestCmp extends React.Component {
 
 describe('Multiple Instance Connector', () => {
 	describe('connect', () => {
+		test('Connected component hoists statics', () => {
+			const connected = MultipleInstanceConnector.connect([], {})(InnerCmp);
 
+			expect(connected.staticMethod).toEqual(InnerCmp.staticMethod);
+		});
+
+		test('Connected component passes the ref to the inner cmp', () => {
+			const stores = [buildStore({})];
+			const propMap = {};
+
+			let innerCmpRef = null;
+
+			const Connected = MultipleInstanceConnector.connect(stores, propMap)(InnerCmp);
+
+			const testRenderer = TestRenderer.create((
+				<Connected ref={x => innerCmpRef = x} />
+			));
+
+			const innerCmp = testRenderer.root.findByType(InnerCmp);
+
+			expect(innerCmp.instance).toEqual(innerCmpRef);
+		});
+
+		test('Connected component renders the multiple instance connector with appropriate props', () => {
+			const stores = [
+				buildStore({}),
+				buildStore({}),
+				buildStore({})
+			];
+			const propMap = {};
+
+			const Connected = MultipleInstanceConnector.connect(stores, propMap)(InnerCmp);
+
+			const testRenderer = TestRenderer.create((
+				<Connected extraProp="foo" />
+			));
+			const testRoot = testRenderer.root;
+
+			const connector = testRoot.findByType(MultipleInstanceConnector);
+			const innerCmp = testRoot.findByType(InnerCmp);
+
+			expect(innerCmp).toBeDefined();
+			expect(innerCmp.props.extraProp).toEqual('foo');
+
+			expect(connector).toBeDefined();
+			expect(connector.props.stores).toEqual(stores);
+			expect(connector.props.propMap).toEqual(propMap);
+		});
 	});
 
 	describe('High Order Component', () => {
