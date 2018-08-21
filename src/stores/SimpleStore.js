@@ -1,48 +1,152 @@
+import EventEmitter from 'events';
+
 import React from 'react';
-import Connector from '@nti/lib-store-connector';
+import PropTypes from 'prop-types';
 import {HOC} from '@nti/lib-commons';
 
-const Instance = Symbol('Instance');
-const Data = Symbol('Data');
-const Listeners = Symbol('Listeners');
+import {Instance as InstanceConnector} from '../connectors';
+import ContextWrapper from '../Context';
 
-export default class SimpleStore {
-	static getInstance () {
+import {ChangeEvent, Load} from './Constants';
+
+const Instances = Symbol('Instances');
+const Singleton = Symbol('Singleton');
+const StoreKey = Symbol('StoreKey');
+
+const Data = Symbol('Data');
+const ChangedKeys = Symbol('ChangedKeys');
+
+const LoadTimeout = Symbol('Load Timeout');
+
+
+export default class SimpleStore extends EventEmitter {
+	//set to true if you want any connected component to have the same store instance
+	static Singleton = false
+
+	static getStore (key) {
 		const Store = this;
 
-		this[Instance] = this[Instance] || new Store();
+		if (this.Singleton) {
+			key = Singleton;
+		}
 
-		return this[Instance];
+		if (!key) {
+			return new Store();
+		}
+
+		this[Instances] = this[Instances] || {};
+
+		if (!this[Instances][key]) {
+			this[Instances][key] = new Store();
+			this[Instances][key][StoreKey] = key;
+		}
+
+		return this[Instances][key];
 	}
 
+
+	/**
+	 * Create a component to render around the InstanceConnector
+	 * it MUST render its children!
+	 *
+	 * @param  {Object} Component the class of the component that is being connected
+	 * @return {Object}           the wrapper component to render
+	 */
+	static buildConnectorCmp (Component) {}
+
+	static validateConnection (Component) {}
+
 	static connect (propMap, storeProp = 'store') {
-		const store = this.getInstance();
-		const extraProps = {
-			[storeProp]: store
-		};
+		return (Component) => {
+			this.validateConnection(Component);
 
-		return function decorator (component) {
-			const cmp = React.forwardRef((props, ref) =>
-				React.createElement(component, {
-					...extraProps,
-					...props,
-					ref
-				}));
+			const Wrapper = this.buildConnectorCmp(Component);
+			const getStoreKey = props => Component.deriveStoreKeyFromProps ? Component.deriveStoreKeyFromProps(props) : null;
+			const getStore = key => this.getStore(key);
 
-			HOC.hoistStatics(cmp, component, 'SimpleStoreConnector');
+			class StoreConnector extends React.Component {
+				static propTypes = {
+					forwardRef: PropTypes.func
+				}
 
-			return Connector.connect(
-				store,
-				cmp,
-				propMap
-			);
+				state = {}
+
+				constructor (props) {
+					super(props);
+
+					this.state = {
+						store: getStore(getStoreKey(props))
+					};
+				}
+
+				componentDidUpdate () {
+					this.setupFor(this.props);
+				}
+
+
+				setupFor (props) {
+					const {store} = this.state;
+
+					if (!store || store[StoreKey] === Singleton) { return; }
+
+					const key = getStoreKey(props);
+					const keyChanged = (store[StoreKey] || key) ? store[StoreKey] !== key : false;
+
+					if (keyChanged) {
+						this.setState({
+							store: getStore(key)
+						});
+					}
+				}
+
+
+				render () {
+					const {forwardRef, ...otherProps} = this.props;
+					const {store} = this.state;
+
+					const child = React.createElement(
+						InstanceConnector,
+						{store: store, propMap},
+						React.createElement(
+							Component,
+							{...otherProps, [storeProp]: store, ref: forwardRef}
+						)
+					);
+
+					return React.createElement(
+						ContextWrapper,
+						{store},
+						Wrapper ?
+							React.createElement(Wrapper, {store, ...otherProps}, child) :
+							child
+					);
+				}
+			}
+
+			const name = Wrapper ? Wrapper.displayName || Wrapper.name : 'SimpleStoreConnector';
+			const cmp = React.forwardRef((props, ref) => {
+				return React.createElement(StoreConnector, {...props, forwardRef: ref});
+			});
+
+			HOC.hoistStatics(cmp, Component, name);
+
+			return cmp;
 		};
 	}
 
 
 	constructor () {
-		this[Listeners] = [];
+		super();
+
 		this[Data] = {};
+
+		if (this.initMixins) {
+			this.initMixins();
+		}
+	}
+
+	get storeKey () {
+		return this[StoreKey];
 	}
 
 
@@ -54,36 +158,63 @@ export default class SimpleStore {
 
 
 	set (key, value) {
-		this[Data][key] = value;
+		this[ChangedKeys] = this[ChangedKeys] || [];
+
+		if (typeof key === 'object') {
+			this[Data] = {...this[Data], ...key};
+			this[ChangedKeys] = [...this[ChangedKeys], ...Object.keys(key)];
+		} else {
+			this[Data][key] = value;
+			this[ChangedKeys] = [...this[ChangedKeys], key];
+		}
+
+
+		if (this.emitChangeTimeout) { return; }
+
+		this.emitChangeTimeout = setTimeout(() => {
+			this.emitChange();
+		}, 100);
 	}
 
 
-	emitChange (type) {
-		for (let listener of this[Listeners]) {
-			listener({type});
+	emitChange (changedType) {
+		clearTimeout(this.emitChangeTimeout);
+
+		if (!changedType) {
+			changedType = [];
+		} else if (!Array.isArray(changedType)) {
+			changedType = [changedType];
 		}
+
+		const type = this[ChangedKeys] ? [...changedType, ...this[ChangedKeys]] : changedType;
+
+		this.emit(ChangeEvent, {
+			type: type.length > 1 ? type : type[0]
+		});
+
+		this[ChangedKeys] = null;
 	}
 
 
 	addChangeListener (fn) {
-		if (!hasListener(fn, this[Listeners])) {
-			this[Listeners].push(fn);
-		}
+		this.removeChangeListener(fn);
+		this.addListener(ChangeEvent, fn);
 	}
 
 
 	removeChangeListener (fn) {
-		this[Listeners] = this[Listeners].filter(listener => listener !== fn);
+		this.removeListener(ChangeEvent, fn);
 	}
-}
 
 
-function hasListener (fn, listeners) {
-	for (let listener of listeners) {
-		if (listener === fn) {
-			return true;
+	[Load] () {
+		if (!this.load) { return; }
+
+		if (!this[LoadTimeout]) {
+			this[LoadTimeout] = setTimeout(() => {
+				this.load();
+				delete this[LoadTimeout];
+			}, 100);
 		}
 	}
-
-	return false;
 }

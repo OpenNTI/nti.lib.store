@@ -1,3 +1,2 @@
-export PagedBatchStore from './PagedBatchStore';
+export BoundStore from './BoundStore';
 export SimpleStore from './SimpleStore';
-export SearchablePagedStore from './SearchablePagedStore';
