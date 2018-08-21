@@ -117,7 +117,7 @@ export default class SimpleStore extends EventEmitter {
 						ContextWrapper,
 						{store},
 						Wrapper ?
-							React.createElement(Wrapper, {store}, child) :
+							React.createElement(Wrapper, {store, ...otherProps}, child) :
 							child
 					);
 				}

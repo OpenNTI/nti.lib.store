@@ -553,6 +553,18 @@ describe('SimpleStore', () => {
 				expect(getChild(wrapperCmp).type).toBe(instanceConnectorCmp.type);
 				expect(getChild(instanceConnectorCmp).type).toBe(innerCmp.type);
 			});
+
+			test('passes extraProps to the connectorCmp', () => {
+				const extraProp = 'extra-prop';
+				const Connector = WrapperStore.connect({})(InnerCmp);
+				const testRenderer = TestRenderer.create((
+					<Connector extraProp={extraProp} />
+				));
+
+				const wrapperCmp = testRenderer.root.findByType(Wrapper);
+
+				expect(wrapperCmp.props.extraProp).toEqual(extraProp);
+			});
 		});
 	});
 });
