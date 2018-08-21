@@ -3,7 +3,7 @@ import React from 'react';
 import TestRenderer from 'react-test-renderer';
 
 import SimpleStore from '../SimpleStore';
-import {ChangeEvent} from '../Constants';
+import {ChangeEvent, Load} from '../Constants';
 import StoreContext from '../../Context';
 import {Instance as InstanceConnector} from '../../connectors';
 
@@ -253,6 +253,60 @@ describe('SimpleStore', () => {
 				store.emit(ChangeEvent);
 
 				expect(listener).toHaveBeenCalledTimes(1);
+			});
+		});
+
+		describe('[Load]', () => {
+			class LoadStore extends SimpleStore {
+				load () {}
+			}
+
+			beforeEach (() => {
+				jest.useFakeTimers();
+			});
+
+			afterEach (() => {
+				jest.useRealTimers();
+			});
+
+			test('if load is not defined on the subclass [Load] does nothing', () => {
+				const store = new TestStore();
+
+				store[Load]();
+
+				expect(setTimeout).not.toHaveBeenCalled();
+			});
+
+			test('only calls load once if [Load] is called in quick succession', () => {
+				const store = new LoadStore();
+
+				jest.spyOn(store, 'load');
+
+				store[Load]();
+				store[Load]();
+				store[Load]();
+
+				jest.runAllTimers();
+
+				expect(store.load).toHaveBeenCalledTimes(1);
+			});
+
+			test('calls load again if enough time passes between [Load]', () => {
+				const store = new LoadStore();
+
+				jest.spyOn(store, 'load');
+
+				store[Load]();
+				store[Load]();
+
+				jest.runAllTimers();
+				expect(store.load).toHaveBeenCalledTimes(1);
+
+				store[Load]();
+				store[Load]();
+
+				jest.runAllTimers();
+				expect(store.load).toHaveBeenCalledTimes(2);
 			});
 		});
 
