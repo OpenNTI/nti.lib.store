@@ -68,8 +68,8 @@ export default class BoundStore extends SimpleStore {
 	}
 
 
-	onPropsChange (props) {
-		this.emit(PropsChangeEvent, props);
+	onPropsChange (props, Component) {
+		this.emit(PropsChangeEvent, props, Component);
 	}
 
 
