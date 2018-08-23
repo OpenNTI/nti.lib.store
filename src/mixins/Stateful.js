@@ -59,6 +59,10 @@ export default {
 
 		const state = State[this.stateKey];
 
+		if(!state) {
+			return;
+		}
+
 		for (let property of this.StatefulProperties) {
 			this.set(property, state[property]);
 		}

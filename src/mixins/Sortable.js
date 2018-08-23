@@ -1,15 +1,17 @@
 import {Load} from '../stores/Constants';
 
-const SortProperty = Symbol('Sort Property');
-const SortDirection = Symbol('Sort Direction');
-
 export default {
 	defaultSortProperty: null,
 	defaultSortDirection: null,
 
+	initMixin () {
+		this.set('sortProperty', this.defaultSortProperty);
+		this.set('sortDirection', this.defaultSortDirection);
+	},
+
 	setSort (property, direction) {
-		this[SortProperty] = property;
-		this[SortDirection] = direction;
+		this.set('sortProperty', property);
+		this.set('sortDirection', direction);
 
 		if (this.applySort) {
 			this.applySort(property, direction);
@@ -22,7 +24,7 @@ export default {
 
 
 	setSortProperty (property) {
-		this[SortProperty] = property;
+		this.set('sortProperty', property);
 
 		if (this.applySort) {
 			this.applySort(property, this.sortDirection);
@@ -35,7 +37,7 @@ export default {
 
 
 	setSortDirection (direction) {
-		this[SortDirection] = direction;
+		this.set('sortDirection', direction);
 
 		if (this.applySort) {
 			this.applySort(this.sortProperty, direction);
@@ -48,11 +50,11 @@ export default {
 
 
 	get sortProperty () {
-		return this[SortProperty] || this.defaultSortProperty;
+		return this.get('sortProperty') || this.defaultSortProperty;
 	},
 
 
 	get sortDirection () {
-		return this[SortDirection] || this.defaultSortDirection;
+		return this.get('sortDirection') || this.defaultSortDirection;
 	}
 };
