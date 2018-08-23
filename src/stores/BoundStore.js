@@ -39,7 +39,7 @@ export default class BoundStore extends SimpleStore {
 				const binding = deriveBinding(props);
 
 				store[SetBinding](binding);
-				store.onPropsChange(props);
+				store.onPropsChange(props, Component);
 			}
 
 			render () {
