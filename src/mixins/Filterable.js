@@ -1,20 +1,31 @@
 import {Load} from '../stores/Constants';
 
-const Filter = Symbol('Filter');
-
 export default {
+	defaultFilter: null,
+
 	initMixin () {
+		this.set('filter', this.defaultFilter);
+
 		if (this.addPropsChangeListener) {
-			this.addPropsChangeListener((props) => {
+			this.addPropsChangeListener((props, Component) => {
 				if (props.filter !== this.filter) {
-					this.updateFilter(props.filter);
+					if (Component.deriveFilterFromProps) {
+						const newFilter = Component.deriveFilterFromProps(props);
+
+						if(newFilter !== this.filter) {
+							this.updateFilter(Component.deriveFilterFromProps(props));
+						}
+					}
+					else if (props.filter !== this.filter) {
+						this.updateFilter(props.filter);
+					}
 				}
 			});
 		}
 	},
 
 	setFilter (term) {
-		this[Filter] = term;
+		this.set('filter', term);
 
 		if (this.applyFilter) {
 			this.applyFilter(term);
@@ -25,7 +36,7 @@ export default {
 
 
 	get filter () {
-		return this[Filter];
+		return this.get('filter') || this.defaultFilter;
 	},
 
 

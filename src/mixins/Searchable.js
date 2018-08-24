@@ -1,14 +1,17 @@
 import {Load} from '../stores/Constants';
 
-const SearchTerm = Symbol('SearchTerm');
 const SearchTimeout = Symbol('SearchTimeout');
 
 export default {
+	defaultSearchTerm: null,
+
 	initMixin () {
+		this.set('searchTerm', this.defaultSearchTerm);
+
 		if (this.addPropsChangeListener) {
 			this.addPropsChangeListener((props) => {
 				if (props.searchTerm !== this.searchTerm) {
-					this.updateSearchTerm(props.searchTerm);
+					this.updateSearchTerm(props.searchTerm || this.defaultSearchTerm);
 				}
 			});
 		}
@@ -17,7 +20,7 @@ export default {
 	SEARCH_BUFFER: 300,
 
 	setSearchTerm (term) {
-		this[SearchTerm] = term;
+		this.set('searchTerm', term);
 
 		if (this.applySearchTerm) {
 			this.applySearchTerm(term);
@@ -28,7 +31,7 @@ export default {
 
 
 	get searchTerm () {
-		return this[SearchTerm];
+		return this.get('searchTerm') || this.defaultSearchTerm;
 	},
 
 
