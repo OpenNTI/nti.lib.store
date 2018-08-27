@@ -141,7 +141,7 @@ describe('SimpleStore', () => {
 
 				store.emitChange('type');
 				expect(clearTimeout).toHaveBeenCalledTimes(1);
-				expect(clearTimeout).toHaveBeenLastCalledWith(store.emitChangeTimeout);
+				expect(clearTimeout).toHaveBeenLastCalledWith(300);
 			});
 
 			test('emitChange fires the change event with the arguments as the type', () => {
