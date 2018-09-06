@@ -3,8 +3,10 @@
   "version": "1.7.0-alpha",
   "description": "Flux store super class implementation",
   "main": "lib/index.js",
+  "module": "src/index.js",
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "scripts": {
     "test": "cmp-scripts test",
@@ -43,9 +45,9 @@
     "invariant": "^2.1.0"
   },
   "devDependencies": {
-    "@nti/cmp-scripts": "^1.18.67",
-    "react": "^16.4.2",
+    "@nti/cmp-scripts": "^2.0.0",
+    "@nti/util-logger": "^1.0.1",
     "prop-types": "^15.6.2",
-    "@nti/util-logger": "^1.0.1"
+    "react": "^16.4.2"
   }
 }
