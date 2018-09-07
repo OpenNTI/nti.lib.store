@@ -102,7 +102,8 @@ export default class MultipleInstanceConnector extends React.Component {
 	render () {
 		const {stores, propMap, children, ...otherProps} = this.props;
 		const storeProps = getPropsForMap(stores, propMap);
+		const child = React.Children.only(children);
 
-		return React.cloneElement(React.Children.only(children), {...otherProps, ...storeProps});
+		return React.cloneElement(child, {...storeProps, ...otherProps, ...child.props});
 	}
 }
