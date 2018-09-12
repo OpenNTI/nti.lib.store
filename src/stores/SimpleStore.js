@@ -12,12 +12,15 @@ import {ChangeEvent, Load} from './Constants';
 const Instances = Symbol('Instances');
 const Singleton = Symbol('Singleton');
 const StoreKey = Symbol('StoreKey');
+const Set = Symbol('Set');
 
 const Data = Symbol('Data');
 const ChangedKeys = Symbol('ChangedKeys');
 
 const LoadTimeout = Symbol('Load Timeout');
 
+// turn (key, value) into {key: value}
+const ensureObject = (key, value) => typeof key === 'object' ? key : {[key]: value};
 
 export default class SimpleStore extends EventEmitter {
 	//set to true if you want any connected component to have the same store instance
@@ -149,6 +152,13 @@ export default class SimpleStore extends EventEmitter {
 		return this[StoreKey];
 	}
 
+	clear (immediate) {
+		const {length} = this[ChangedKeys] = Object.keys(this[Data]);
+		if (length) {
+			this[Data] = {};
+			immediate ? this.emitChange() : this.scheduleEmit();
+		}
+	}
 
 	get (key) {
 		const data = this[Data][key];
@@ -156,23 +166,39 @@ export default class SimpleStore extends EventEmitter {
 		return data !== undefined ? data : this[key];
 	}
 
-
-	set (key, value) {
+	[Set] (props, immediate) {
 		this[ChangedKeys] = this[ChangedKeys] || [];
+		this[Data] = {...this[Data], ...props};
+		this[ChangedKeys] = [...this[ChangedKeys], ...Object.keys(props)];
 
-		if (typeof key === 'object') {
-			this[Data] = {...this[Data], ...key};
-			this[ChangedKeys] = [...this[ChangedKeys], ...Object.keys(key)];
-		} else {
-			this[Data][key] = value;
-			this[ChangedKeys] = [...this[ChangedKeys], key];
-		}
+		immediate ? this.emitChange() : this.scheduleEmit();
+	}
 
+	/**
+	 * Set store value(s) and emit change events immediately.
+	 * @param {string | Object} key - String to store value under, or a mapping of properties to be stored
+	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
+	 * @return {void}
+	 */
+	setImmediate (key, value) {
+		return this[Set](ensureObject(key, value), true);
+	}
 
+	/**
+	 * Set store value(s). Change events may be deferred to allow multiple calls without triggering excessive updates.
+	 * @param {string | Object} key - A string under which to store value; or a mapping of properties to be stored
+	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
+	 * @return {void}
+	 */
+	set (key, value) {
+		return this[Set](ensureObject(key, value));
+	}
+
+	scheduleEmit (...args) {
 		if (this.emitChangeTimeout) { return; }
 
 		this.emitChangeTimeout = setTimeout(() => {
-			this.emitChange();
+			this.emitChange(...args);
 		}, 100);
 	}
 
