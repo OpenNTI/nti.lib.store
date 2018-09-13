@@ -153,11 +153,9 @@ export default class SimpleStore extends EventEmitter {
 	}
 
 	clear (immediate) {
-		const {length} = this[ChangedKeys] = Object.keys(this[Data]);
-		if (length) {
-			this[Data] = {};
-			immediate ? this.emitChange() : this.scheduleEmit();
-		}
+		this[ChangedKeys] = Object.keys(this[Data]);
+		this[Data] = {};
+		immediate ? this.emitChange() : this.scheduleEmit();
 	}
 
 	get (key) {
