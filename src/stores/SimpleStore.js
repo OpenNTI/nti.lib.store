@@ -59,7 +59,7 @@ export default class SimpleStore extends EventEmitter {
 
 	static validateConnection (Component) {}
 
-	static connect (propMap, storeProp = 'store') {
+	static connect (propMap = {}, storeProp = 'store') {
 		return (Component) => {
 			this.validateConnection(Component);
 
