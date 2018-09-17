@@ -34,6 +34,12 @@ export default class BoundStore extends SimpleStore {
 				this.setupFor(this.props);
 			}
 
+			componentWillUnmount () {
+				if (this.cleanup) {
+					this.cleanup();
+				}
+			}
+
 			setupFor (props) {
 				const {store} = props;
 				const binding = deriveBinding(props);
