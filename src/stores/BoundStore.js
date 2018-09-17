@@ -21,7 +21,8 @@ export default class BoundStore extends SimpleStore {
 		class BoundStoreWrapper extends React.Component {
 			static propTypes = {
 				store: PropTypes.shape({
-					onPropsChange: PropTypes.func.isRequired
+					onPropsChange: PropTypes.func.isRequired,
+					cleanup: PropTypes.func
 				}).isRequired,
 				children: PropTypes.any
 			}
@@ -35,8 +36,8 @@ export default class BoundStore extends SimpleStore {
 			}
 
 			componentWillUnmount () {
-				if (this.cleanup) {
-					this.cleanup();
+				if (this.props.store.cleanup) {
+					this.props.store.cleanup();
 				}
 			}
 
