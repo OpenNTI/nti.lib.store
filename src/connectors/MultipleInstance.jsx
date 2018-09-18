@@ -9,9 +9,13 @@ export default class MultipleInstanceConnector extends React.Component {
 		return function decorator (Component) {
 			const cmp = React.forwardRef((props, ref) => {
 				return (
-					<MultipleInstanceConnector stores={stores} propMap={propMap}>
-						<Component {...props} ref={ref} />
-					</MultipleInstanceConnector>
+					<MultipleInstanceConnector
+						component={Component}
+						componentRef={ref}
+						stores={stores}
+						propMap={propMap}
+						props={props}
+					/>
 				);
 			});
 
@@ -34,6 +38,9 @@ export default class MultipleInstanceConnector extends React.Component {
 			PropTypes.object,
 			PropTypes.array
 		]),
+		props: PropTypes.object,
+		component: PropTypes.any,
+		componentRef: PropTypes.any,
 
 		children: PropTypes.element
 	}
@@ -100,10 +107,26 @@ export default class MultipleInstanceConnector extends React.Component {
 	}
 
 	render () {
-		const {stores, propMap, children, ...otherProps} = this.props;
+		const {
+			component,
+			componentRef: ref,
+			props,
+			stores,
+			propMap,
+			children,
+			...otherProps
+		} = this.props;
 		const storeProps = getPropsForMap(stores, propMap);
-		const child = React.Children.only(children);
 
-		return React.cloneElement(child, {...storeProps, ...otherProps, ...child.props});
+		const p = {
+			...storeProps,
+			...otherProps,
+			...props,
+			ref
+		};
+
+		return component
+			? React.createElement(component, p)
+			: React.cloneElement(React.Children.only(children), p);
 	}
 }

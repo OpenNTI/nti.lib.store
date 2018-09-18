@@ -8,13 +8,9 @@ import MultipleInstance from './MultipleInstance';
 export default class AnyStoreConnector extends React.Component {
 	static connect (propMap) {
 		return function decorator (Component) {
-			const cmp = React.forwardRef((props, ref) => {
-				return (
-					<AnyStoreConnector propMap={propMap}>
-						<Component {...props} ref={ref} />
-					</AnyStoreConnector>
-				);
-			});
+			const cmp = React.forwardRef((props, ref) => (
+				<AnyStoreConnector propMap={propMap} component={Component} componentRef={ref} props={props} />
+			));
 
 			HOC.hoistStatics(cmp, Component, 'AnyStoreConnector');
 

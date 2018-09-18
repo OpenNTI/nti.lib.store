@@ -438,12 +438,11 @@ describe('SimpleStore', () => {
 			test('renders the correct hierarchy (context > connector > innerCmp)', () => {
 				const context = testRenderer.root.findByType(StoreContext);
 				const connector = testRenderer.root.findByType(InstanceConnector);
-				const innerCmp = testRenderer.root.findByType(InnerCmp);
 
 				const getChild = cmp => React.Children.only(cmp.props.children);
 
 				expect(getChild(context).type).toBe(connector.type);
-				expect(getChild(connector).type).toBe(innerCmp.type);
+				expect(connector.props.component).toBe(InnerCmp);
 			});
 
 			test('passes the correct prop map to the store connector', () => {
@@ -536,7 +535,7 @@ describe('SimpleStore', () => {
 				}
 			}
 
-			test('renders the connectorCmp with InstanceConnector and InnerCmp as children', () => {
+			test('renders the connectorCmp with InstanceConnector and InnerCmp as component prop', () => {
 				const Connector = WrapperStore.connect({})(InnerCmp);
 				const testRenderer = TestRenderer.create((
 					<Connector />
@@ -546,12 +545,11 @@ describe('SimpleStore', () => {
 
 				const wrapperCmp = testRenderer.root.findByType(Wrapper);
 				const instanceConnectorCmp = testRenderer.root.findByType(InstanceConnector);
-				const innerCmp = testRenderer.root.findByType(InnerCmp);
 
 				expect(wrapperCmp).toBeDefined();
 
 				expect(getChild(wrapperCmp).type).toBe(instanceConnectorCmp.type);
-				expect(getChild(instanceConnectorCmp).type).toBe(innerCmp.type);
+				expect(instanceConnectorCmp.props.component).toBe(InnerCmp);
 			});
 
 			test('passes extraProps to the connectorCmp', () => {
