@@ -104,23 +104,26 @@ export default class SimpleStore extends EventEmitter {
 
 
 				render () {
-					const {forwardRef, ...otherProps} = this.props;
+					const {forwardRef, ...componentProps} = this.props;
 					const {store} = this.state;
 
 					const child = React.createElement(
 						InstanceConnector,
-						{store: store, propMap},
-						React.createElement(
-							Component,
-							{...otherProps, [storeProp]: store, ref: forwardRef}
-						)
+						{
+							store,
+							propMap,
+							component: Component,
+							componentRef: forwardRef,
+							componentProps,
+							[storeProp]: store
+						},
 					);
 
 					return React.createElement(
 						ContextWrapper,
 						{store},
 						Wrapper ?
-							React.createElement(Wrapper, {store, ...otherProps}, child) :
+							React.createElement(Wrapper, {store, ...componentProps}, child) :
 							child
 					);
 				}

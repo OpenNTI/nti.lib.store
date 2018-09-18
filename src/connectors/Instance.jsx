@@ -29,9 +29,10 @@ export default class StoreInstanceConnector extends React.Component {
 				propMap={propMap}
 				onMount={onMount}
 				onUnmount={onUnmount}
-			>
-				<Component {...props} ref={ref} />
-			</StoreInstanceConnector>
+				component={Component}
+				componentRef={ref}
+				componentProps={props}
+			/>
 		));
 
 		return HOC.hoistStatics(cmp, Component, 'StoreInstanceConnector');
@@ -76,10 +77,18 @@ export default class StoreInstanceConnector extends React.Component {
 		onUnmount: PropTypes.func,
 
 		/*
-		 * Optional/Required: This, or _component must be specified... not both.
+		 * Optional/Required: This, or component must be specified... not both.
 		 * A single child... will clone and add props.
 		 */
-		children: PropTypes.element
+		children: PropTypes.element,
+
+		component: PropTypes.any,
+		componentRef: PropTypes.any,
+
+		/*
+		 * Props to be passed to the child component
+		 */
+		componentProps: PropTypes.any
 	}
 
 	constructor (props) {
@@ -152,12 +161,29 @@ export default class StoreInstanceConnector extends React.Component {
 
 
 	render () {
-		const {children, store, propMap, ...otherProps} = this.props;
+		const {
+			component,
+			componentRef: ref,
+			componentProps = {},
+			children,
+			store,
+			propMap,
+			...otherProps
+		} = this.props;
 		const storeProps = getPropsForMap(store, propMap);
 
 		delete otherProps.onMount;
 		delete otherProps.onUnmount;
 
-		return React.cloneElement(React.Children.only(children), {...storeProps, ...otherProps});
+		const props = {
+			...storeProps,
+			...componentProps,
+			...otherProps,
+			ref
+		};
+
+		return component
+			? React.createElement(component, props)
+			: React.cloneElement(React.Children.only(children), props);
 	}
 }

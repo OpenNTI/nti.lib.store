@@ -24,6 +24,8 @@ describe('Instance Connector', () => {
 			expect(connected.staticMethod).toEqual(InnerCmp.staticMethod);
 		});
 
+		test.skip('Connected component instantiates inner component exactly once', () => {});
+
 		test('Connected component passes ref to the inner cmp', () => {
 			const store = buildStore({});
 			const propMap = {};
