@@ -114,8 +114,7 @@ export default class SimpleStore extends EventEmitter {
 							propMap,
 							component: Component,
 							componentRef: forwardRef,
-							componentProps,
-							[storeProp]: store
+							componentProps: {...componentProps, [storeProp]: store}
 						},
 					);
 
