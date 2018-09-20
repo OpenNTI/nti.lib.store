@@ -163,10 +163,6 @@ export default class SimpleStore extends EventEmitter {
 		}
 	}
 
-	getAll () {
-		return {...(this[Data] || {})};
-	}
-
 	get (key) {
 		const data = this[Data][key];
 
