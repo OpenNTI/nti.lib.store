@@ -97,7 +97,7 @@ describe('SimpleStore', () => {
 
 				store.set('key', 'value');
 
-				expect(setTimeout).toHaveBeenCalled();
+				expect(setImmediate).toHaveBeenCalled();
 			});
 
 			test('only starts one timeout at a time', () => {
@@ -106,7 +106,7 @@ describe('SimpleStore', () => {
 				store.set('key', 'value');
 				store.set('foo', 'bar');
 
-				expect(setTimeout).toHaveBeenCalledTimes(1);
+				expect(setImmediate).toHaveBeenCalledTimes(1);
 			});
 
 			test('calls emitChange with all the keys that have been changed', () => {
@@ -140,8 +140,8 @@ describe('SimpleStore', () => {
 				store.emitChangeTimeout = 300;
 
 				store.emitChange('type');
-				expect(clearTimeout).toHaveBeenCalledTimes(1);
-				expect(clearTimeout).toHaveBeenLastCalledWith(300);
+				expect(clearImmediate).toHaveBeenCalledTimes(1);
+				expect(clearImmediate).toHaveBeenLastCalledWith(300);
 			});
 
 			test('emitChange fires the change event with the arguments as the type', () => {
@@ -274,7 +274,7 @@ describe('SimpleStore', () => {
 
 				store[Load]();
 
-				expect(setTimeout).not.toHaveBeenCalled();
+				expect(setImmediate).not.toHaveBeenCalled();
 			});
 
 			test('only calls load once if [Load] is called in quick succession', () => {

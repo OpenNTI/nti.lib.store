@@ -3,9 +3,7 @@ import shouldUpdateForChange from '../should-update-for-change';
 
 describe('should-update-for-change', () => {
 	test('throws if there are no types on the change', () => {
-		expect(() => {
-			shouldUpdateForChange({}, {});
-		}).toThrow();
+		expect(shouldUpdateForChange({}, {})).toBeFalsy();
 	});
 
 	test('returns true if there is no propMap', () => {
