@@ -207,7 +207,7 @@ export default class SimpleStore extends EventEmitter {
 
 
 	emitChange (changedType) {
-		clearTimeout(this.emitChangeTimeout);
+		clearImmediate(this.emitChangeTimeout);
 		delete this.emitChangeTimeout;
 
 		if (!changedType) {
