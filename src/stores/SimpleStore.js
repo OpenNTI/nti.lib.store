@@ -200,9 +200,9 @@ export default class SimpleStore extends EventEmitter {
 	scheduleEmit (...args) {
 		if (this.emitChangeTimeout) { return; }
 
-		this.emitChangeTimeout = setTimeout(() => {
+		this.emitChangeTimeout = setImmediate(() => {
 			this.emitChange(...args);
-		}, 100);
+		});
 	}
 
 
@@ -241,10 +241,10 @@ export default class SimpleStore extends EventEmitter {
 		if (!this.load) { return; }
 
 		if (!this[LoadTimeout]) {
-			this[LoadTimeout] = setTimeout(() => {
+			this[LoadTimeout] = setImmediate(() => {
 				this.load();
 				delete this[LoadTimeout];
-			}, 100);
+			});
 		}
 	}
 }

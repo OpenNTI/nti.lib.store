@@ -5,7 +5,7 @@ export default function shouldUpdateForChange (change = {}, propMap) {
 	const normalized = propMap && normalizePropMap(propMap);
 
 	if (!changedTypes) {
-		throw new Error('No type on change');
+		return false;
 	}
 
 	if (!normalized) {
