@@ -40,11 +40,30 @@ export default class SimpleStore extends EventEmitter {
 		this[Instances] = this[Instances] || {};
 
 		if (!this[Instances][key]) {
-			this[Instances][key] = new Store();
-			this[Instances][key][StoreKey] = key;
+			this[Instances][key] = {
+				count: 1,
+				store: new Store()
+			};
+			this[Instances][key].store[StoreKey] = key;
+		} else {
+			this[Instances][key].count += 1;
 		}
 
-		return this[Instances][key];
+		return this[Instances][key].store;
+	}
+
+
+	static freeStore (key) {
+		if (this.Singleton || !key || !this[Instances] || !this[Instances][key]) { return; }
+
+		this[Instances][key].count -= 1;
+
+		setImmediate(() => {
+			if (this[Instances][key].count <= 0) {
+				delete this[Instances][key];
+			}
+		});
+
 	}
 
 
@@ -65,7 +84,8 @@ export default class SimpleStore extends EventEmitter {
 
 			const Wrapper = this.buildConnectorCmp(Component);
 			const getStoreKey = props => Component.deriveStoreKeyFromProps ? Component.deriveStoreKeyFromProps(props) : null;
-			const getStore = key => this.getStore(key);
+			const getStore = (key) => this.getStore(key);
+			const freeStore = (key) => this.freeStore(key);
 
 			class StoreConnector extends React.Component {
 				static propTypes = {
@@ -84,6 +104,11 @@ export default class SimpleStore extends EventEmitter {
 
 				componentDidUpdate () {
 					this.setupFor(this.props);
+				}
+
+
+				componentWillUnmount () {
+					freeStore(getStoreKey(this.props));
 				}
 
 
