@@ -78,6 +78,53 @@ export default class SimpleStore extends EventEmitter {
 
 	static validateConnection (Component) {}
 
+	static monitor (propMap = {}, storeProp = 'store') {
+		const instance = this;
+		const getClosestStore = (stores) => {
+			for (let i = stores.length - 1; i >= 0; i -= 1) {
+				const store = stores[i];
+
+				if (store instanceof instance) {
+					return store;
+				}
+			}
+
+			return null;
+		};
+
+		return (Component) => {
+			const name = 'StoreMonitor';
+			const cmp = React.forwardRef((props, ref) => {
+				return React.createElement(
+					ContextWrapper.Consumer,
+					null,
+					({stores}) => {
+						const store = getClosestStore(stores);
+
+						if (!store) {
+							return React.createElement(Component, {
+								...props,
+								ref
+							});
+						}
+
+						return React.createElement(InstanceConnector, {
+							store,
+							propMap,
+							component: Component,
+							componentRef: ref,
+							componentProps: {...props, [storeProp]: store}
+						});
+					}
+				);
+			});
+
+			HOC.hoistStatics(cmp, Component, name);
+
+			return cmp;
+		};
+	}
+
 	static connect (propMap = {}, storeProp = 'store') {
 		return (Component) => {
 			this.validateConnection(Component);
