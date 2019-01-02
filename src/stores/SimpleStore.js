@@ -46,7 +46,7 @@ export default class SimpleStore extends EventEmitter {
 			};
 			this[Instances][key].store[StoreKey] = key;
 		} else {
-			this[Instances][key].count += 1;
+			this[Instances][key].count++;
 		}
 
 		return this[Instances][key].store;
@@ -56,7 +56,7 @@ export default class SimpleStore extends EventEmitter {
 	static freeStore (key) {
 		if (this.Singleton || !key || !this[Instances] || !this[Instances][key]) { return; }
 
-		this[Instances][key].count -= 1;
+		this[Instances][key].count--;
 
 		setImmediate(() => {
 			if (this[Instances][key].count <= 0) {
@@ -81,7 +81,7 @@ export default class SimpleStore extends EventEmitter {
 	static monitor (propMap = {}, storeProp = 'store') {
 		const instance = this;
 		const getClosestStore = (stores) => {
-			for (let i = stores.length - 1; i >= 0; i -= 1) {
+			for (let i = stores.length - 1; i >= 0; i--) {
 				const store = stores[i];
 
 				if (store instanceof instance) {
