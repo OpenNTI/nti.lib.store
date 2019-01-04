@@ -1,20 +1,47 @@
+import Storage from '@nti/web-storage';
+import {getAppUsername} from '@nti/web-client';
+
 const StateKey = Symbol('StateKey');
 const UpdateState = Symbol('UpdateState');
 const ApplyState = Symbol('ApplyState');
 
 const State = {};
 
+const baseKey = () => {
+	baseKey.cached = baseKey.cached || btoa(getAppUsername());
+	return baseKey.cached;
+};
+const getLocalStorageKey = (key) => `${baseKey()}-${key}`;
+const writeToLocalStorage = (key, value) => Storage.setItem(getLocalStorageKey(key), value);
+const readFromLocalStorage = (key) => Storage.getItem(getLocalStorageKey(key));
+
 
 export default {
+	StateKey: null,
 	StatefulProperties: null,
+	PersistState: false,
+
 
 	initMixin () {
+		const applyDefaultKey = () => {
+			//This has to be an immediate for the class properties to be set up
+			setImmediate(() => {
+				if (this.StateKey) {
+					this.setStateKey(this.StateKey);
+				}
+			});
+		};
+
 		if (this.addPropsChangeListener) {
 			this.addPropsChangeListener((props, Component) => {
 				if (Component.deriveStateKeyFromProps) {
 					this.setStateKey(Component.deriveStateKeyFromProps(props));
+				} else {
+					applyDefaultKey();
 				}
 			});
+		} else {
+			applyDefaultKey();
 		}
 
 		if (this.addChangeListener) {
@@ -41,6 +68,23 @@ export default {
 	},
 
 
+	serializeState (state) {
+		return JSON.stringify(state);
+	},
+
+	deserializeState (state) {
+		if (typeof state !== 'string') { return state; }
+
+		try {
+			const json = JSON.parse(state);
+
+			return json;
+		} catch (e) {
+			return {};
+		}
+	},
+
+
 	[UpdateState] () {
 		if (!this.StatefulProperties) { return; }
 
@@ -50,14 +94,20 @@ export default {
 			state[property] = this.get(property);
 		}
 
-		State[this.stateKey] = state;
+		if (this.PersistState) {
+			writeToLocalStorage(this.stateKey, this.serializeState(state));
+		} else {
+			State[this.stateKey] = state;
+		}
 	},
 
 
 	[ApplyState] () {
 		if (!this.StatefulProperties) { return; }
 
-		const state = State[this.stateKey];
+		const state = this.PersistState ?
+			this.deserializeState(readFromLocalStorage(this.stateKey)) :
+			State[this.stateKey];
 
 		if(!state) {
 			return;

@@ -35,6 +35,8 @@
     "@nti/lib-commons": "^2.23.0",
     "@nti/lib-dispatcher": "^1.0.0",
     "@nti/lib-store-connector": "0.x.x",
+    "@nti/web-client": "^1.9.1",
+    "@nti/web-storage": "^1.3.0",
     "react-dom": "^16.4.2",
     "react-test-renderer": "^16.4.2"
   },
