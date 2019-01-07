@@ -1,5 +1,6 @@
 import Storage from '@nti/web-storage';
 import {getAppUsername} from '@nti/web-client';
+//TODO: don't depend on web repos in a lib!
 
 const StateKey = Symbol('StateKey');
 const UpdateState = Symbol('UpdateState');
