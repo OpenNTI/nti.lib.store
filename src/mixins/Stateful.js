@@ -23,26 +23,36 @@ export default {
 
 
 	initMixin () {
-		const applyDefaultKey = () => {
-			//This has to be an immediate for the class properties to be set up
-			setImmediate(() => {
-				if (this.StateKey) {
-					this.setStateKey(this.StateKey);
-				}
-			});
-		};
+		let initialized = false;
 
-		if (this.addPropsChangeListener) {
-			this.addPropsChangeListener((props, Component) => {
-				if (Component.deriveStateKeyFromProps) {
-					this.setStateKey(Component.deriveStateKeyFromProps(props));
-				} else {
-					applyDefaultKey();
-				}
-			});
-		} else {
-			applyDefaultKey();
-		}
+		this.stateInitialized = new Promise ((fulfill) => {
+			const applyDefaultKey = () => {
+				setImmediate(() => {
+					if (this.StateKey && !initialized) {
+						initialized = true;
+						this.setStateKey(this.StateKey);
+						fulfill();
+					}
+				});
+			};
+
+			if (this.addPropsChangeListener) {
+				this.addPropsChangeListener((props, Component) => {
+					if (Component.deriveStateKeyFromProps) {
+						this.setStateKey(Component.deriveStateKeyFromProps(props));
+
+						if (!initialized) {
+							initialized = true;
+							fulfill();
+						}
+					} else {
+						applyDefaultKey();
+					}
+				});
+			} else {
+				applyDefaultKey();
+			}
+		});
 
 		if (this.addChangeListener) {
 			this.addChangeListener(() => {
