@@ -9,5 +9,6 @@ export default StorePrototype;
 
 export * as Stores from './stores';
 export * as Connectors from './connectors';
+export * as Interfaces from './interfaces';
 export * as Mixins from './mixins';
 

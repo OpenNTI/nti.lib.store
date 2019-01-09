@@ -217,6 +217,10 @@ export default class SimpleStore extends EventEmitter {
 
 		this[Data] = {};
 
+		if (this.initInterfaces) {
+			this.initInterfaces();
+		}
+
 		if (this.initMixins) {
 			this.initMixins();
 		}
