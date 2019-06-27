@@ -29,7 +29,7 @@ export default function Stateful (key, properties, storage) {
 			const applyDefaultKey = () => {
 				if (key && !initialized) {
 					initialized = true;
-					this.setStateKey(key);
+					this.setStateKey(typeof key === 'function' ? key() : key);
 				}
 			};
 
