@@ -94,7 +94,7 @@ export default class SimpleStore extends EventEmitter {
 
 		return (Component) => {
 			const name = 'StoreMonitor';
-			const cmp = React.forwardRef((props, ref) => {
+			const MonitorWrapper = (props, ref) => {
 				return React.createElement(
 					ContextWrapper.Consumer,
 					null,
@@ -117,7 +117,8 @@ export default class SimpleStore extends EventEmitter {
 						});
 					}
 				);
-			});
+			};
+			const cmp = React.forwardRef(MonitorWrapper);
 
 			HOC.hoistStatics(cmp, Component, name);
 
@@ -194,16 +195,17 @@ export default class SimpleStore extends EventEmitter {
 						ContextWrapper,
 						{store},
 						Wrapper ?
-							React.createElement(Wrapper, {store, ...componentProps}, child) :
+							React.createElement(Wrapper, {...componentProps, store}, child) :
 							child
 					);
 				}
 			}
 
 			const name = Wrapper ? Wrapper.displayName || Wrapper.name : 'SimpleStoreConnector';
-			const cmp = React.forwardRef((props, ref) => {
+			const ConnectorWrapper = (props, ref) => {
 				return React.createElement(StoreConnector, {...props, forwardRef: ref});
-			});
+			};
+			const cmp = React.forwardRef(ConnectorWrapper);
 
 			HOC.hoistStatics(cmp, Component, name);
 
