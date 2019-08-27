@@ -58,13 +58,18 @@ export default class BoundStore extends SimpleStore {
 	}
 
 
+	bindingDidUpdate (prevBinding) {
+		return this[Binding] !== prevBinding;
+	}
+
+
 
 	[SetBinding] (binding) {
-		const changed = this[Binding] !== binding;
+		const oldBinding = this[Binding];
 
 		this[Binding] = binding;
 
-		if (changed) {
+		if (!oldBinding || this.bindingDidUpdate(oldBinding)) {
 			this[Load]();
 		}
 	}
