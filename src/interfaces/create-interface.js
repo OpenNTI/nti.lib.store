@@ -1,7 +1,8 @@
 const INTERFACES = Symbol('Interfaces');
 const INTERFACE_ID = Symbol('Interface ID');
 
-const { defineProperty, getOwnPropertyDescriptor, getOwnPropertyNames, getOwnPropertySymbols } = Object;
+const { defineProperty, getOwnPropertyDescriptor, getOwnPropertyNames, getOwnPropertySymbols, hasOwnProperty: has } = Object;
+const hasOwnProperty = (x, k) => has.call(x, k);
 
 const getOwnProperties = getOwnPropertySymbols ?
 	(object) => [...getOwnPropertyNames(object), ...getOwnPropertySymbols(object)] :
@@ -21,7 +22,7 @@ const inPrototype = (object, key) => {
 	const base = Object.getPrototypeOf(object || {});
 	const proto = (object || {}).prototype;
 
-	return Boolean(proto && (proto.hasOwnProperty(key) || inPrototype(base, key)));
+	return Boolean(proto && (hasOwnProperty(proto, key) || inPrototype(base, key)));
 };
 
 function getInterfaces (target) {
@@ -29,7 +30,7 @@ function getInterfaces (target) {
 	let proto = target;
 
 	while (proto) {
-		if (proto && proto.hasOwnProperty(INTERFACES)) {
+		if (proto && hasOwnProperty(proto, INTERFACES)) {
 			seen.unshift(proto[INTERFACES]);
 		}
 

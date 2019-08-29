@@ -17,9 +17,9 @@ describe('get-props-for-map', () => {
 		const props = getPropsForMap(store, propMap);
 
 		expect((Object.keys(props)).length).toEqual(2);
-		expect(props.hasOwnProperty('key1')).toBeTruthy();
-		expect(props.hasOwnProperty('key2')).toBeTruthy();
-		expect(props.hasOwnProperty('key3')).toBeFalsy();
+		expect(props).toHaveProperty('key1');
+		expect(props).toHaveProperty('key2');
+		expect(props).toHaveProperty('key3');
 	});
 
 	test('Returns value from the last store that defines it', () => {

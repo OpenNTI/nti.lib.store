@@ -14,5 +14,5 @@ export default function shouldUpdateForChange (change = {}, propMap) {
 
 	const type = Array.isArray(changedTypes) ? changedTypes : [changedTypes];
 
-	return type.some(prop => normalized.hasOwnProperty(prop));
+	return type.some(prop => Object.prototype.hasOwnProperty.call(normalized, prop));
 }

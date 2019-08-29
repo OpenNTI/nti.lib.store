@@ -8,6 +8,7 @@ import MultipleInstance from './MultipleInstance';
 export default class AnyStoreConnector extends React.Component {
 	static connect (propMap) {
 		return function decorator (Component) {
+			// eslint-disable-next-line react/display-name
 			const cmp = React.forwardRef((props, ref) => (
 				<AnyStoreConnector propMap={propMap} component={Component} componentRef={ref} props={props} />
 			));
@@ -24,14 +25,12 @@ export default class AnyStoreConnector extends React.Component {
 		return (
 			<StoreContext.Consumer>
 				{
-					(({stores}) => {
-						return (
-							<MultipleInstance
-								stores={stores}
-								{...this.props}
-							/>
-						);
-					})
+					(({stores}) => (
+						<MultipleInstance
+							stores={stores}
+							{...this.props}
+						/>
+					))
 				}
 			</StoreContext.Consumer>
 		);

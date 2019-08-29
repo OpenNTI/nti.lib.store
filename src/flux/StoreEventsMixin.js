@@ -11,7 +11,7 @@ const handlerMapKey = 'backingStoreEventHandlers';
 export default {
 
 	registerStoreEventHandler (eventId, handlerId) {
-		if (!this.hasOwnProperty(handlerMapKey)) {
+		if (!Object.prototype.hasOwnProperty.call(this,handlerMapKey)) {
 			this[handlerMapKey] = Object.create(this[getHandlers]({}) || {});
 		}
 

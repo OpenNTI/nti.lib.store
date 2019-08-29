@@ -6,8 +6,8 @@ describe('normalize-prop-map', () => {
 		const normalized = normalize(['key1', 'key2']);
 
 		expect((Object.keys(normalized)).length).toEqual(2);
-		expect(normalized.hasOwnProperty('key1')).toBeTruthy();
-		expect(normalized.hasOwnProperty('key2')).toBeTruthy();
+		expect(normalized).toHaveProperty('key1');
+		expect(normalized).toHaveProperty('key2');
 	});
 
 	test('object', () => {
