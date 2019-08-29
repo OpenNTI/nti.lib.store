@@ -19,7 +19,7 @@ describe('get-props-for-map', () => {
 		expect((Object.keys(props)).length).toEqual(2);
 		expect(props).toHaveProperty('key1');
 		expect(props).toHaveProperty('key2');
-		expect(props).toHaveProperty('key3');
+		expect(props).not.toHaveProperty('key3');
 	});
 
 	test('Returns value from the last store that defines it', () => {
