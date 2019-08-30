@@ -98,7 +98,7 @@ export default class SimpleStore extends EventEmitter {
 				return React.createElement(
 					ContextWrapper.Consumer,
 					null,
-					({stores}) => {
+					({stores}) => { // <-- will prob for unmount/remount every rerender
 						const store = getClosestStore(stores);
 
 						if (!store) {
