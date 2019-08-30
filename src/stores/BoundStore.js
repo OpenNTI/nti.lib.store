@@ -32,19 +32,6 @@ export default class BoundStore extends SimpleStore {
 			}
 
 			componentDidUpdate (old) {
-				if (process.env.NODE_ENV !== 'production') {
-					let changed = [];
-					for (let o of new Set([...Object.keys(old),...Object.keys(this.props)])) {
-						if (old[o] !== this.props[o]) {
-							changed.push(o);
-						}
-					}
-
-					changed = changed.join(',');
-
-					console.debug('BoundStoreWrapper updating for %s, changed props: %s', Component.name, changed);
-					// if (!/^(|children)$/.test(changed)) {}
-				}
 				this.setupFor(this.props);
 			}
 
