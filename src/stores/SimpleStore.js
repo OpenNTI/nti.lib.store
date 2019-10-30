@@ -319,7 +319,7 @@ export default class SimpleStore extends EventEmitter {
 		if (!this.load) { return; }
 
 		if (!this[LoadTimeout]) {
-			this[LoadTimeout] = setImmediate(() => {
+			this[LoadTimeout] = setImmediate(() => { // window.setImmediate, not this.setImmediate
 				this.load();
 				delete this[LoadTimeout];
 			});
