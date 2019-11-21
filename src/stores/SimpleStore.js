@@ -95,28 +95,23 @@ export default class SimpleStore extends EventEmitter {
 		return (Component) => {
 			const name = 'StoreMonitor';
 			const MonitorWrapper = (props, ref) => {
-				return React.createElement(
-					ContextWrapper.Consumer,
-					null,
-					({stores}) => { // <-- will prob for unmount/remount every rerender
-						const store = getClosestStore(stores);
+				const {stores} = React.useContext(ContextWrapper.Context);
+				const store = getClosestStore(stores);
 
-						if (!store) {
-							return React.createElement(Component, {
-								...props,
-								ref
-							});
-						}
+				if (!store) {
+					return React.createElement(Component, {
+						...props,
+						ref
+					});
+				}
 
-						return React.createElement(InstanceConnector, {
-							store,
-							propMap,
-							component: Component,
-							componentRef: ref,
-							componentProps: {...props, [storeProp]: store}
-						});
-					}
-				);
+				return React.createElement(InstanceConnector, {
+					store,
+					propMap,
+					component: Component,
+					componentRef: ref,
+					componentProps: {...props, [storeProp]: store}
+				});
 			};
 			const cmp = React.forwardRef(MonitorWrapper);
 

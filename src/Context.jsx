@@ -3,33 +3,20 @@ import PropTypes from 'prop-types';
 
 const StoreContext = React.createContext({stores: []});
 
+StoreContextWrapper.Context = StoreContext;
+StoreContextWrapper.Consumer = StoreContext.Consumer;
+StoreContextWrapper.propTypes = {
+	store: PropTypes.object.isRequired,
+	children: PropTypes.any
+};
+export default function StoreContextWrapper ({store, children, ...otherProps}) {
+	const {stores} = React.useContext(StoreContext);
 
-export default class StoreContextWrapper extends React.Component {
-	static Consumer = StoreContext.Consumer
+	const context = {stores: [...stores, store]};
 
-	static propTypes = {
-		store: PropTypes.object.isRequired,
-		children: PropTypes.any
-	}
-
-
-	render () {
-		const {store, children, ...otherProps} = this.props;
-
-		return (
-			<StoreContext.Consumer>
-				{
-					({stores}) => {
-						const context = {stores: [...stores, store]};
-
-						return (
-							<StoreContext.Provider value={context}>
-								{React.cloneElement(React.Children.only(children), otherProps)}
-							</StoreContext.Provider>
-						);
-					}
-				}
-			</StoreContext.Consumer>
-		);
-	}
+	return (
+		<StoreContext.Provider value={context}>
+			{React.cloneElement(React.Children.only(children), otherProps)}
+		</StoreContext.Provider>
+	);
 }
