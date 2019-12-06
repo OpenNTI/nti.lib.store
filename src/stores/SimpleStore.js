@@ -217,6 +217,7 @@ export default class SimpleStore extends EventEmitter {
 	constructor () {
 		super();
 
+		this.setMaxListeners(100);
 		this[Data] = {};
 
 		if (this.initInterfaces) {
