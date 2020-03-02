@@ -1,6 +1,6 @@
 import StorePrototype from './flux/StorePrototype';
-export TypedEventEmitter from './flux/TypedEventEmitter';
-export StoreEventsMixin from './flux/StoreEventsMixin';
+export { default as TypedEventEmitter } from './flux/TypedEventEmitter';
+export { default as StoreEventsMixin } from './flux/StoreEventsMixin';
 
 export * from './flux/Constants';
 

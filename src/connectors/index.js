@@ -1,2 +1,2 @@
-export Any from './Any';
-export Instance from './Instance';
+export { default as Any } from './Any';
+export { default as Instance } from './Instance';

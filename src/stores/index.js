@@ -1,2 +1,2 @@
-export BoundStore from './BoundStore';
-export SimpleStore from './SimpleStore';
+export { default as BoundStore } from './BoundStore';
+export { default as SimpleStore } from './SimpleStore';
