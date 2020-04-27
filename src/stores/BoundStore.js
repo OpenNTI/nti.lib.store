@@ -15,6 +15,18 @@ export default class BoundStore extends SimpleStore {
 		}
 	}
 
+	static useWrapperEffects (store, props, Cmp, config) {
+		const binding = config?.deriveBindingFromProps?.(props) ?? null;
+
+		React.useEffect(() => {
+			store[SetBinding](binding);
+		}, [binding]);
+
+		React.useEffect(() => {
+			store.onPropsChange(props, Cmp);
+		});
+	}
+
 	static buildConnectorCmp (Component) {
 		const deriveBinding = (props) => Component.deriveBindingFromProps ? Component.deriveBindingFromProps(props) : null;
 

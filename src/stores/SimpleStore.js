@@ -6,6 +6,7 @@ import {HOC} from '@nti/lib-commons';
 
 import {Instance as InstanceConnector} from '../connectors';
 import ContextWrapper from '../Context';
+import {useMonitor} from '../hooks';
 
 import {ChangeEvent, Load} from './Constants';
 
@@ -18,6 +19,7 @@ const Data = Symbol('Data');
 const ChangedKeys = Symbol('ChangedKeys');
 
 const LoadTimeout = Symbol('Load Timeout');
+
 
 // turn (key, value) into {key: value}
 const ensureObject = (key, value) => typeof key === 'object' ? key : {[key]: value};
@@ -78,6 +80,11 @@ export default class SimpleStore extends EventEmitter {
 
 	static validateConnection (Component) {}
 
+	static useMonitor (propMap) {
+		const instance = this;
+		return useMonitor(propMap, (s) => s instanceof instance);
+	}
+
 	static monitor (propMap = {}, storeProp = 'store') {
 		const instance = this;
 		const getClosestStore = (stores) => {
@@ -119,6 +126,48 @@ export default class SimpleStore extends EventEmitter {
 
 			return cmp;
 		};
+	}
+
+	static WrapCmp (Cmp, config = {}) {
+		const {deriveStoreKeyFromProps} = config;
+
+		this?.validateConfig?.(config);
+
+		const getStoreKey = props => deriveStoreKeyFromProps?.(props) ?? null;
+		const getStore = (key) => this.getStore(key);
+		const freeStore = (key) => this.freeStore(key);
+
+		const useWrapperEffects = (store, props) => this?.useWrapperEffects?.(store, props, Cmp, config);
+
+		function WrappedCmp (props, ref) {
+			const key = getStoreKey(props);
+			const [store, setStore] = React.useState(getStore(key));
+
+			React.useEffect(() => {
+				const newStore = getStore(key);
+
+				if (store !== newStore) {
+					setStore(newStore);
+				}
+
+				return () => (freeStore(key), store?.cleanup?.());
+			}, [key]);
+
+			useWrapperEffects(store, props);
+
+			return React.createElement(
+				ContextWrapper,
+				{store},
+				React.createElement(Cmp, {...props, ref})
+			);
+		}
+
+		const forwarded = React.forwardRef(WrappedCmp);
+		const name = `${this.name}(${Cmp.name || Cmp.displayName})`;
+
+		HOC.hoistStatics(forwarded, Cmp, name);
+
+		return forwarded;
 	}
 
 	static connect (propMap = {}, storeProp = 'store') {
@@ -309,7 +358,6 @@ export default class SimpleStore extends EventEmitter {
 	removeChangeListener (fn) {
 		this.removeListener(ChangeEvent, fn);
 	}
-
 
 	[Load] () {
 		if (!this.load) { return; }
