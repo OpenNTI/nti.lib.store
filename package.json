@@ -2,21 +2,18 @@
   "name": "@nti/lib-store",
   "version": "1.18.0-alpha",
   "description": "Flux store super class implementation",
-  "main": "lib/index.js",
+  "main": ".index.js",
   "module": "src/index.js",
   "files": [
-    "lib",
+    ".index.js",
     "src"
   ],
   "scripts": {
     "test": "cmp-scripts test",
     "start": "cmp-scripts test --watch",
-    "prepack": "cmp-scripts build",
-    "build": "cmp-scripts build",
     "clean": "cmp-scripts clean",
     "check": "cmp-scripts check",
     "release": "cmp-scripts release",
-    "install-snapshots": "cmp-scripts install-snapshots",
     "fix": "cmp-scripts fix"
   },
   "repository": {
@@ -32,21 +29,16 @@
   "author": "nextthought",
   "license": "UNLICENSED",
   "dependencies": {
-    "@nti/lib-commons": "^2.23.0",
-    "@nti/lib-dispatcher": "^1.0.0",
-    "@nti/lib-store-connector": "0.x.x",
+    "@nti/lib-commons": "NextThought/nti.lib.commons",
+    "@nti/lib-dispatcher": "NextThought/nti.lib.dispatcher",
+    "@nti/lib-store-connector": "NextThought/nti.lib.store.connector",
     "react-dom": "^16.4.2",
-    "react-test-renderer": "^16.4.2"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "prop-types": "*",
-    "@nti/util-logger": "^1.0.1",
-    "invariant": "^2.1.0"
+    "react-test-renderer": "^16.4.2",
+    "esm": "^3.2.25"
   },
   "devDependencies": {
     "@nti/cmp-scripts": "^2.0.0",
-    "@nti/util-logger": "^1.0.1",
+    "@nti/util-logger": "NextThought/nti.util.logger",
     "prop-types": "^15.6.2",
     "react": "^16.4.2"
   }

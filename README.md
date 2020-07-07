@@ -1,5 +1,8 @@
 # nti-lib-store
 
+![Build Status](https://github.com/NextThought/nti.lib.store/workflows/Tests/badge.svg)
+
+
 Example usage:
 
 Store.js:
