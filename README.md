@@ -1,6 +1,6 @@
 # nti-lib-store
 
-![Build Status](https://github.com/NextThought/nti.lib.store/workflows/Tests/badge.svg)
+![Build Status](https://github.com/NextThought/nti.lib.store/workflows/Project%20Health/badge.svg)
 
 
 Example usage:
