@@ -1,6 +1,6 @@
 {
   "name": "@nti/lib-store",
-  "version": "1.18.0",
+  "version": "1.19.0-alpha",
   "description": "Flux store super class implementation",
   "main": ".index.js",
   "module": "src/index.js",
