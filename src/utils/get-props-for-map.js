@@ -1,28 +1,13 @@
-import getBoundFunction from './get-bound-function';
-import normalizePropmap from './normalize-prop-map';
 
-function findStoreWithValue (stores, key) {
-	for (let store of stores) {
-		const value = store.get(key);
-
-		if (value !== undefined) {
-			return  {
-				store,
-				value
-			};
-		}
-	}
-
-	return {};
-}
+import getValueFromStore from './get-value-from-store';
+import normalizePropMap from './normalize-prop-map';
 
 export default function getPropsForMap (stores, propMap) {
 	if (!Array.isArray(stores)) {
 		stores = [stores];
 	}
 
-	const check = [...stores].reverse();
-	const normalized = normalizePropmap(propMap);
+	const normalized = normalizePropMap(propMap);
 	const keys = Object.keys(normalized);
 
 	const props = {};
@@ -30,13 +15,7 @@ export default function getPropsForMap (stores, propMap) {
 	for (let key of keys) {
 		if (typeof normalized[key] === 'string') {
 			const propKey = normalized[key];
-			const {store, value} = findStoreWithValue(check, key);
-
-			if (typeof value === 'function') {
-				props[propKey] = getBoundFunction(value, store);
-			} else {
-				props[propKey] = value;
-			}
+			props[propKey] = getValueFromStore(stores, key);
 		} else if (typeof key === 'string' && normalized[key] != null) {
 			props[key] = normalized[key];
 		}

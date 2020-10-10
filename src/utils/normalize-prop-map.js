@@ -7,6 +7,9 @@ function convertArray (props) {
 }
 
 export default function normalizePropMap (propMap) {
+	if (propMap instanceof Set) {
+		return convertArray([...propMap]);
+	}
 	if (Array.isArray(propMap)) {
 		return convertArray(propMap);
 	}
