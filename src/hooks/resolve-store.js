@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useMemo} from 'react';
 import {Array as ArrayUtils} from '@nti/lib-commons';
 
 import ContextWrapper from '../Context';
@@ -14,11 +14,12 @@ export function useResolvedStore (storeOrPredicate) {
 	const isPredicate = typeof storeOrPredicate === 'function';
 
 	const storePredicate = isPredicate ? storeOrPredicate : Identity;
-	const given = isPredicate ? null : emptyToNull(ArrayUtils.ensure(storeOrPredicate).filter(Identity));
+	const given = useMemo(() => isPredicate ? null : emptyToNull(ArrayUtils.ensure(storeOrPredicate).filter(Identity)), [storeOrPredicate]);
+	const filtered = useMemo(() => stores.filter(storePredicate), [storePredicate]);
 
 	if (given && !given.every(storeInterface)) {
 		throw new Error('Invalid Store');
 	}
 
-	return given || stores.filter(storePredicate);
+	return given || filtered;
 }
