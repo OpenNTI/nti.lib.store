@@ -1,5 +1,5 @@
 import {useContext} from 'react';
-import {ArrayUtils} from '@nti/lib-commons';
+import {Array as ArrayUtils} from '@nti/lib-commons';
 
 import ContextWrapper from '../Context';
 
@@ -14,7 +14,7 @@ export function useResolvedStore (storeOrPredicate) {
 	const isPredicate = typeof storeOrPredicate === 'function';
 
 	const storePredicate = isPredicate ? storeOrPredicate : Identity;
-	const given = isPredicate ? null : emptyToNull(ArrayUtils.ensureArray(storeOrPredicate).filter(Identity));
+	const given = isPredicate ? null : emptyToNull(ArrayUtils.ensure(storeOrPredicate).filter(Identity));
 
 	if (given && !given.every(storeInterface)) {
 		throw new Error('Invalid Store');
