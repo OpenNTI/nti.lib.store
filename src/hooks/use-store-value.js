@@ -8,7 +8,7 @@ import { useResolvedStore } from './resolve-store';
 const ALWAYS_NEW_VALUE = () => Date.now();
 const BLANK_TARGET = Object.seal({});
 const NOT_ALLOWED = () => {
-	throw new Error('Not writable');
+	throw new Error('Operation Not Allowed');
 };
 
 const BASE_PROXY_TRAPS = {
