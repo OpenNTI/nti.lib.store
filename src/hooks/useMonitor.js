@@ -1,11 +1,11 @@
 import React from 'react';
 
 import {getPropsForMap, shouldUpdateForChange} from '../utils';
-import ContextWrapper from '../Context';
+
+import { useResolvedStore } from './resolve-store';
 
 export default function useMonitor (propMap, storePredicate = Boolean) {
-	const {stores} = React.useContext(ContextWrapper.Context);
-	const monitoring = stores.filter(store => storePredicate(store));
+	const monitoring = useResolvedStore(storePredicate);
 
 	const [storeProps, setStoreProps] = React.useState(getPropsForMap(monitoring, propMap));
 
