@@ -42,7 +42,8 @@ export default {
 	},
 
 
-	componentWillMount () {
+	// eslint-disable-next-line camelcase
+	UNSAFE_componentWillMount () {
 		this[getStore] = getKey.bind(this, 'backingStore');
 		this[getHandlers] = getKey.bind(this, handlerMapKey);
 		this[onStoreChange] = onStoreChangeImpl.bind(this);
