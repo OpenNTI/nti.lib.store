@@ -6,7 +6,7 @@ import {HOC} from '@nti/lib-commons';
 
 import {Instance as InstanceConnector} from '../connectors';
 import ContextWrapper from '../Context';
-import {useMonitor} from '../hooks';
+import {useMonitor, useStoreValue} from '../hooks';
 
 import {ChangeEvent, Load} from './Constants';
 
@@ -83,6 +83,11 @@ export default class SimpleStore extends EventEmitter {
 	static useMonitor (propMap) {
 		const instance = this;
 		return useMonitor(propMap, (s) => s instanceof instance);
+	}
+
+	static useValue () {
+		const StoreClass = this;
+		return useStoreValue(store => store instanceof StoreClass);
 	}
 
 	static monitor (propMap = {}, storeProp = 'store') {
