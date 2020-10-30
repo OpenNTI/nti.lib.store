@@ -133,6 +133,7 @@ export default class SimpleStore extends EventEmitter {
 		};
 	}
 
+	static compose = this.WrapCmp;
 	static WrapCmp (Cmp, config = {}) {
 		const {deriveStoreKeyFromProps} = config;
 
