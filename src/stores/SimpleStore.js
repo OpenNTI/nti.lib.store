@@ -87,7 +87,8 @@ export default class SimpleStore extends EventEmitter {
 
 	static useValue () {
 		const StoreClass = this;
-		return useStoreValue(store => store instanceof StoreClass);
+		const selector = React.useMemo(() => store => store instanceof StoreClass, [StoreClass]);
+		return useStoreValue(selector);
 	}
 
 	static monitor (propMap = {}, storeProp = 'store') {
