@@ -18,10 +18,10 @@ export default class BoundStore extends SimpleStore {
 	static useWrapperEffects (store, props, Cmp, config) {
 		const binding = config?.deriveBindingFromProps?.(props) ?? null;
 
-		store[SetBinding](binding);
+		store?.[SetBinding](binding);
 
 		React.useEffect(() => {
-			store.onPropsChange(props, Cmp);
+			store?.onPropsChange(props, Cmp);
 		});
 	}
 

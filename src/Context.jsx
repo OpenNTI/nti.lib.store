@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 const StoreContext = React.createContext({stores: []});
@@ -10,9 +10,8 @@ StoreContextWrapper.propTypes = {
 	children: PropTypes.any
 };
 export default function StoreContextWrapper ({store, children, ...otherProps}) {
-	const {stores} = React.useContext(StoreContext);
-
-	const context = {stores: [...stores, store]};
+	const {stores} = useContext(StoreContext);
+	const context = useMemo(() => ({stores: [...stores, store]}), [...stores, store]);
 
 	return (
 		<StoreContext.Provider value={context}>

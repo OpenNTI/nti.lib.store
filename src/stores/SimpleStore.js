@@ -149,6 +149,8 @@ export default class SimpleStore extends EventEmitter {
 		function WrappedCmp (props, ref) {
 			const key = getStoreKey(props);
 			const [store, setStore] = React.useState(getStore(key));
+			// TODO: check context for another instance and no-op if found & this.Singleton == true
+			// const {stores} = React.useContext(ContextWrapper.Context);
 
 			React.useEffect(() => {
 				const newStore = getStore(key);
