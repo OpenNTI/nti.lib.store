@@ -1,6 +1,7 @@
 import {Load} from '../stores/Constants';
 
 const SearchTimeout = Symbol('SearchTimeout');
+const SearchBuffering = Symbol('SearchBuffering');
 
 export default {
 	defaultSearchTerm: null,
@@ -34,16 +35,23 @@ export default {
 		return this.get('searchTerm') || this.defaultSearchTerm;
 	},
 
+	get isBufferingSearch () {
+		return this[SearchBuffering];
+	},
+
 
 	updateSearchTerm (term) {
 		this.setSearchTerm(term);
 
+		this[SearchBuffering] = true;
 		clearTimeout(this[SearchTimeout]);
 
 		if (!term) {
+			this[SearchBuffering] = false;
 			this[Load]();
 		} else {
 			this[SearchTimeout] = setTimeout(() => {
+				this[SearchBuffering] = false;
 				this[Load]();
 			}, this.SEARCH_BUFFER);
 		}
