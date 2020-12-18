@@ -39,7 +39,7 @@
     "@nti/util-logger": "NextThought/nti.util.logger",
     "@testing-library/react": "^11.0.4",
     "@testing-library/react-hooks": "^3.4.2",
-    "react-test-renderer": "^16.4.2"
+    "react-test-renderer": "^17.0.1"
   },
   "peerDependencies": {
     "prop-types": "*",
