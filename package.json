@@ -42,6 +42,7 @@
   },
   "peerDependencies": {
     "prop-types": "*",
-    "react": "*"
+    "react": "*",
+    "react-test-renderer": "*"
   }
 }
