@@ -32,8 +32,6 @@
     "@nti/lib-commons": "NextThought/nti.lib.commons",
     "@nti/lib-dispatcher": "NextThought/nti.lib.dispatcher",
     "@nti/lib-store-connector": "NextThought/nti.lib.store.connector",
-    "react-dom": "^16.4.2",
-    "react-test-renderer": "^16.4.2",
     "esm": "^3.2.25"
   },
   "devDependencies": {
@@ -41,7 +39,10 @@
     "@nti/util-logger": "NextThought/nti.util.logger",
     "@testing-library/react": "^11.0.4",
     "@testing-library/react-hooks": "^3.4.2",
-    "prop-types": "^15.6.2",
-    "react": "^16.4.2"
+    "react-test-renderer": "^16.4.2"
+  },
+  "peerDependencies": {
+    "prop-types": "*",
+    "react": "*"
   }
 }
