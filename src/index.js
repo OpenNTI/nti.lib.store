@@ -12,4 +12,4 @@ export * as Connectors from './connectors';
 export * as Interfaces from './interfaces';
 export * as Mixins from './mixins';
 
-export {MockStore} from './Context';
+export {FakeStore} from './Context';

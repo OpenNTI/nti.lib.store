@@ -21,7 +21,7 @@ export default function StoreContextWrapper ({store, children, ...otherProps}) {
 }
 
 
-MockStore.propTypes = {
+FakeStore.propTypes = {
 	mock: PropTypes.object.isRequired,
 	children: PropTypes.any.isRequired
 };
@@ -30,9 +30,9 @@ MockStore.propTypes = {
  * @param {object} props - props
  * @param {object} props.mock - The Mock store implementation
  * @param {*} props.children - The children the mock store is for
- * @returns {*} MockStore wrapped component.
+ * @returns {*} FakeStore wrapped component.
  */
-export function MockStore ({mock, children}) {
+export function FakeStore ({mock, children}) {
 	return (
 		<StoreContextWrapper store={mock}>
 			{children}
