@@ -32,17 +32,10 @@
     "@nti/lib-commons": "NextThought/nti.lib.commons",
     "@nti/lib-dispatcher": "NextThought/nti.lib.dispatcher",
     "@nti/lib-store-connector": "NextThought/nti.lib.store.connector",
+    "@nti/util-logger": "NextThought/nti.util.logger",
     "esm": "^3.2.25"
   },
   "devDependencies": {
-    "@nti/cmp-scripts": "^2.0.0",
-    "@nti/util-logger": "NextThought/nti.util.logger",
-    "@testing-library/react": "^11.0.4",
-    "@testing-library/react-hooks": "^3.4.2"
-  },
-  "peerDependencies": {
-    "prop-types": "*",
-    "react": "*",
-    "react-test-renderer": "*"
+    "@nti/cmp-scripts": "^2.31.8"
   }
 }
