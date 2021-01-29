@@ -1,2 +1,2 @@
-export useMonitor from './useMonitor';
-export useStoreValue from './use-store-value';
+export { default as useMonitor } from './useMonitor';
+export { default as useStoreValue } from './use-store-value';
