@@ -8,7 +8,6 @@ import MultipleInstance from './MultipleInstance';
 export default class AnyStoreConnector extends React.Component {
 	static connect (propMap) {
 		return function decorator (Component) {
-			// eslint-disable-next-line react/display-name
 			const cmp = React.forwardRef((props, ref) => (
 				<AnyStoreConnector propMap={propMap} component={Component} componentRef={ref} props={props} />
 			));

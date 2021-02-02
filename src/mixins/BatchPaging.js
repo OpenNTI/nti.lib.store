@@ -48,7 +48,7 @@ export default {
 	/**
 	 * Load the next page.
 	 *
-	 * @return {void}
+	 * @returns {void}
 	 */
 	loadNextPage () {
 		this.loadPage(this.get('currentPage') + 1);
@@ -57,7 +57,7 @@ export default {
 	/**
 	 * Load the prev page.
 	 *
-	 * @return {void}
+	 * @returns {void}
 	 */
 	loadPrevPage () {
 		this.loadPage(this.get('currentPage') - 1);
@@ -67,8 +67,8 @@ export default {
 	 * Load  page at a given index
 	 *
 	 * @abstract
-	 * @param  {Number} index the page to load
-	 * @return {void}
+	 * @param  {number} index the page to load
+	 * @returns {void}
 	 */
 	loadPage (index) {}
 };

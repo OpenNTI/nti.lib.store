@@ -27,8 +27,8 @@ FakeStore.propTypes = {
 };
 /**
  * Mock Store for tests
- * @param {object} props - props
- * @param {object} props.mock - The Mock store implementation
+ * @param {Object} props - props
+ * @param {Object} props.mock - The Mock store implementation
  * @param {*} props.children - The children the mock store is for
  * @returns {*} FakeStore wrapped component.
  */

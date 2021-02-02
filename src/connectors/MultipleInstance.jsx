@@ -7,7 +7,6 @@ import {getPropsForMap, shouldUpdateForChange} from '../utils';
 export default class MultipleInstanceConnector extends React.Component {
 	static connect (stores, propMap) {
 		return function decorator (Component) {
-			// eslint-disable-next-line react/display-name
 			const cmp = React.forwardRef((props, ref) => (
 				<MultipleInstanceConnector
 					component={Component}

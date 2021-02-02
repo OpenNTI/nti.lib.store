@@ -74,7 +74,7 @@ export default class SimpleStore extends EventEmitter {
 	 * it MUST render its children!
 	 *
 	 * @param  {Object} Component the class of the component that is being connected
-	 * @return {Object}           the wrapper component to render
+	 * @returns {Object}           the wrapper component to render
 	 */
 	static buildConnectorCmp (Component) {}
 
@@ -313,7 +313,7 @@ export default class SimpleStore extends EventEmitter {
 	 * Set store value(s) and emit change events immediately.
 	 * @param {string | Object} key - String to store value under, or a mapping of properties to be stored
 	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
-	 * @return {void}
+	 * @returns {void}
 	 */
 	setImmediate (key, value) {
 		return this[Set](ensureObject(key, value), true);
@@ -323,7 +323,7 @@ export default class SimpleStore extends EventEmitter {
 	 * Set store value(s). Change events may be deferred to allow multiple calls without triggering excessive updates.
 	 * @param {string | Object} key - A string under which to store value; or a mapping of properties to be stored
 	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
-	 * @return {void}
+	 * @returns {void}
 	 */
 	set (key, value) {
 		return this[Set](ensureObject(key, value));
