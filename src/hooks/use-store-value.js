@@ -45,7 +45,7 @@ const BASE_PROXY_TRAPS = {
  * @param {Store|Store[]|function(Store): boolean} [source] A store, an array of stores, or a function to select a store. The default resolves the store(s) from context.
  * @returns {Record<string, any>} ephemeral store getter proxy. Do not retain a reference to this value. Pull values immediately and discard this proxy.
  */
-export default function useStoreValue (source = null) {
+export default function useStoreValue (source = Boolean) {
 	let locked = false;
 
 	const stores = useResolvedStore(source);
