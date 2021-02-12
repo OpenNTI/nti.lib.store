@@ -1,27 +1,33 @@
 import createInterface from './create-interface';
 import LoadTracker from './common/LoadTracker';
 
-const PrevBinding =  Symbol('Previous Binding');
+const PrevBinding = Symbol('Previous Binding');
 const BatchPointer = Symbol('Batch Pointer');
 
 export default createInterface({
 	/**
 	 * Controls when the initial batch needs to be reloaded
 	 *
-	 * @param {String} prevBinding the binding load was previously called with
-	 * @returns {Boolean} if the initial batch needs to be reloaded
+	 * @param {string} prevBinding the binding load was previously called with
+	 * @returns {boolean} if the initial batch needs to be reloaded
 	 */
-	needsReload (prevBinding) {
-		if (this.isSearchable) { return this.searchTerm !== this.lastSearchTerm; }
+	needsReload(prevBinding) {
+		if (this.isSearchable) {
+			return this.searchTerm !== this.lastSearchTerm;
+		}
 
 		return false;
 	},
 
-	async load () {
-		if (!this.needsReload(this[PrevBinding])) { return; }
+	async load() {
+		if (!this.needsReload(this[PrevBinding])) {
+			return;
+		}
 
 		this[PrevBinding] = this.binding;
-		if (this.isSearchable) { this.lastSearchTerm === this.searchTerm; }
+		if (this.isSearchable) {
+			this.lastSearchTerm === this.searchTerm;
+		}
 
 		const tracker = LoadTracker.for(this).startTracker();
 
@@ -29,13 +35,15 @@ export default createInterface({
 			loading: true,
 			items: null,
 			error: null,
-			hasMore: null
+			hasMore: null,
 		});
 
 		try {
 			const batch = await this.loadInitialBatch();
 
-			if (!tracker.isCurrent()) { return; }
+			if (!tracker.isCurrent()) {
+				return;
+			}
 
 			this[BatchPointer] = batch;
 
@@ -45,32 +53,36 @@ export default createInterface({
 			this.set({
 				loading: false,
 				items: [...items],
-				hasMore
+				hasMore,
 			});
 		} catch (e) {
-			if (!tracker.isCurrent()) { return; }
+			if (!tracker.isCurrent()) {
+				return;
+			}
 
 			this.set({
 				loading: false,
 				error: e,
-				hasMore: false
+				hasMore: false,
 			});
 		}
 	},
 
-	async loadMore () {
+	async loadMore() {
 		const batch = this[BatchPointer];
 
 		const tracker = LoadTracker.for(this).startTracker();
 
 		this.set({
-			loading: true
+			loading: true,
 		});
 
 		try {
 			const next = this.loadNextBatch(batch);
 
-			if (!tracker.isCurrent()) { return; }
+			if (!tracker.isCurrent()) {
+				return;
+			}
 
 			this[BatchPointer] = next;
 
@@ -81,22 +93,27 @@ export default createInterface({
 			this.set({
 				loading: true,
 				items: [...existingItems, ...newItems],
-				hasMore
+				hasMore,
 			});
-		}  catch (e) {
-			if (!tracker.isCurrent()) { return; }
+		} catch (e) {
+			if (!tracker.isCurrent()) {
+				return;
+			}
 
 			this.set({
 				loading: false,
-				error: e
+				error: e,
 			});
 		}
 	},
 
-	loadInitialBatch () {},
-	loadNextBatch () {},
+	loadInitialBatch() {},
+	loadNextBatch() {},
 
-	getItemsFromBatch (batch) { return batch?.Items; },
-	getHasMoreFromBatch (batch) { return batch?.hasLink('batch-next'); }
-
+	getItemsFromBatch(batch) {
+		return batch?.Items;
+	},
+	getHasMoreFromBatch(batch) {
+		return batch?.hasLink('batch-next');
+	},
 });
