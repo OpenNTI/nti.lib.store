@@ -47,12 +47,12 @@ function hasBeenApplied (target, partial) {
 
 	if (!interfaces || !interfaces.length) { return false; }
 
-	return interfaces.every((p) => {
+	return interfaces.some((p) => {
 		if (p[INTERFACE_ID] || partial[INTERFACE_ID]) {
-			return p[INTERFACE_ID] !== partial[INTERFACE_ID];
+			return p[INTERFACE_ID] === partial[INTERFACE_ID];
 		}
 
-		return p !== partial;
+		return p === partial;
 	});
 }
 

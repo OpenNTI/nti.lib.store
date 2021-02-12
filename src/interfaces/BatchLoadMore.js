@@ -5,6 +5,8 @@ const PrevBinding = Symbol('Previous Binding');
 const BatchPointer = Symbol('Batch Pointer');
 
 export default createInterface({
+	[createInterface.ID]: 'BatchLoadMore',
+
 	/**
 	 * Controls when the initial batch needs to be reloaded
 	 *
