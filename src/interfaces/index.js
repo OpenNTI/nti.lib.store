@@ -1,5 +1,6 @@
 import * as Mixins from '../mixins';
 
+import BatchLoadMore from './BatchLoadMore';
 import createInterface from './create-interface';
 import Stateful from './Stateful';
 
@@ -15,7 +16,16 @@ function convertMixin (mixin) {
 	);
 }
 
+function combineInterfaces (...interfaces) {
+	return (target) => (
+		interfaces.reduce((acc, interface) => interface(acc), target)
+	);
+}
+
 const Interfaces = {
+	combine: combineInterfaces,
+
+	BatchLoadMore,
 	Stateful
 };
 
