@@ -14,11 +14,11 @@ export default createInterface({
 	 * @returns {boolean} if the initial batch needs to be reloaded
 	 */
 	needsReload(prevBinding) {
-		if (this.isSearchable) {
+		if (this.isSearchable && this.lastSearchTerm !== undefined) {
 			return this.searchTerm !== this.lastSearchTerm;
 		}
 
-		return false;
+		return true;
 	},
 
 	async load() {
@@ -28,12 +28,12 @@ export default createInterface({
 
 		this[PrevBinding] = this.binding;
 		if (this.isSearchable) {
-			this.lastSearchTerm === this.searchTerm;
+			this.lastSearchTerm = this.searchTerm;
 		}
 
 		const tracker = LoadTracker.for(this).startTracker();
 
-		this.set({
+		this.setImmediate({
 			loading: true,
 			items: null,
 			error: null,

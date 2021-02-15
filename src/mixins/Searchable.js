@@ -4,6 +4,7 @@ const SearchTimeout = Symbol('SearchTimeout');
 const SearchBuffering = Symbol('SearchBuffering');
 
 export default {
+	isSearchable: true,
 	defaultSearchTerm: null,
 
 	initMixin () {
