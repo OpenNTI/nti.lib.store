@@ -3,6 +3,7 @@ import LoadTracker from './common/LoadTracker';
 
 const PrevBinding = Symbol('Previous Binding');
 const BatchPointer = Symbol('Batch Pointer');
+const InitialLoad = Symbol('Initial Load');
 
 export default createInterface({
 	[createInterface.ID]: 'BatchLoadMore',
@@ -18,15 +19,17 @@ export default createInterface({
 			return this.searchTerm !== this.lastSearchTerm;
 		}
 
-		return true;
+		return false;
 	},
 
 	async load() {
-		if (!this.needsReload(this[PrevBinding])) {
+		if (this[InitialLoad] && !this.needsReload(this[PrevBinding])) {
 			return;
 		}
 
 		this[PrevBinding] = this.binding;
+		this[InitialLoad] = true;
+
 		if (this.isSearchable) {
 			this.lastSearchTerm = this.searchTerm;
 		}
@@ -80,7 +83,7 @@ export default createInterface({
 		});
 
 		try {
-			const next = this.loadNextBatch(batch);
+			const next = await this.loadNextBatch(batch);
 
 			if (!tracker.isCurrent()) {
 				return;
@@ -89,8 +92,8 @@ export default createInterface({
 			this[BatchPointer] = next;
 
 			const existingItems = this.get('items');
-			const newItems = this.getItemsFromBatch(batch);
-			const hasMore = this.getHasMoreFromBatch(batch);
+			const newItems = this.getItemsFromBatch(next);
+			const hasMore = this.getHasMoreFromBatch(next);
 
 			this.set({
 				loading: true,
