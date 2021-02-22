@@ -1,51 +1,42 @@
 import React from 'react';
 
 export class InnerCmp extends React.Component {
-	static staticMethod = () => {}
+	static staticMethod = () => {};
 
-	render () {
-		return (
-			<div>
-				Inner Cmp
-			</div>
-		);
+	render() {
+		return <div>Inner Cmp</div>;
 	}
 }
 
-export function buildStore (initialData) {
-	const data = {...initialData};
+export function buildStore(initialData) {
+	const data = { ...initialData };
 	let listeners = [];
 
 	return {
-		get (key) {
+		get(key) {
 			return data[key];
 		},
 
-
-		set (key, value) {
+		set(key, value) {
 			data[key] = value;
 		},
 
-
-		addChangeListener (fn) {
+		addChangeListener(fn) {
 			listeners.push(fn);
 		},
 
-
-		removeChangeListener (fn) {
+		removeChangeListener(fn) {
 			listeners = listeners.filter(handler => handler !== fn);
 		},
 
-
-		getListenerCount () {
+		getListenerCount() {
 			return listeners.length;
 		},
 
-
-		fireChange (type) {
+		fireChange(type) {
 			for (let listener of listeners) {
-				listener({type});
+				listener({ type });
 			}
-		}
+		},
 	};
 }

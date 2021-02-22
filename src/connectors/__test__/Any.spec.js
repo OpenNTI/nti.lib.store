@@ -7,23 +7,22 @@ import StoreContext from '../../Context';
 import AnyConnector from '../Any';
 import MultiConnector from '../MultipleInstance';
 
-import {InnerCmp, buildStore} from './Common';
+import { InnerCmp, buildStore } from './Common';
 
 class TestCmp extends React.Component {
 	static propTypes = {
-		stores: PropTypes.array
-	}
+		stores: PropTypes.array,
+	};
 
-
-	render () {
-		const {stores} = this.props;
+	render() {
+		const { stores } = this.props;
 
 		return this.renderStores(stores);
 	}
 
-	renderStores (stores) {
+	renderStores(stores) {
 		if (!stores.length) {
-			const otherProps = {...this.props};
+			const otherProps = { ...this.props };
 
 			delete otherProps.stores;
 
@@ -57,9 +56,9 @@ describe('Any Connector', () => {
 
 			const Connected = AnyConnector.connect(propMap)(InnerCmp);
 
-			const testRenderer = TestRenderer.create((
-				<Connected ref={x => innerCmpRef = x} />
-			));
+			const testRenderer = TestRenderer.create(
+				<Connected ref={x => (innerCmpRef = x)} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
@@ -71,9 +70,9 @@ describe('Any Connector', () => {
 
 			const Connected = AnyConnector.connect(propMap)(InnerCmp);
 
-			const testRenderer = TestRenderer.create((
+			const testRenderer = TestRenderer.create(
 				<Connected extraProp="foo" />
-			));
+			);
 			const testRoot = testRenderer.root;
 
 			const connector = testRoot.findByType(AnyConnector);
@@ -87,23 +86,14 @@ describe('Any Connector', () => {
 		});
 	});
 
-
 	describe('High Order Component', () => {
 		test('Passes stores in the correct order to a MultiStoreConnector', () => {
-			const stores = [
-				buildStore({}),
-				buildStore({}),
-				buildStore({})
-			];
+			const stores = [buildStore({}), buildStore({}), buildStore({})];
 			const propMap = {};
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					stores={stores}
-					propMap={propMap}
-					extraProp="foo"
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp stores={stores} propMap={propMap} extraProp="foo" />
+			);
 
 			const multiConnector = testRenderer.root.findByType(MultiConnector);
 

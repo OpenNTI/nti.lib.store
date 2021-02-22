@@ -24,9 +24,8 @@ const BASE_PROXY_TRAPS = {
 	ownKeys: NOT_ALLOWED,
 	preventExtensions: NOT_ALLOWED,
 	set: NOT_ALLOWED,
-	setPrototypeOf: NOT_ALLOWED
+	setPrototypeOf: NOT_ALLOWED,
 };
-
 
 /**
  * Use store values and auto-re-render when they change.
@@ -45,19 +44,18 @@ const BASE_PROXY_TRAPS = {
  * @param {Store|Store[]|function(Store): boolean} [source] A store, an array of stores, or a function to select a store. The default resolves the store(s) from context.
  * @returns {Record<string, any>} ephemeral store getter proxy. Do not retain a reference to this value. Pull values immediately and discard this proxy.
  */
-export default function useStoreValue (source = Boolean) {
+export default function useStoreValue(source = Boolean) {
 	let locked = false;
 
 	const stores = useResolvedStore(source);
 	const monitoredProperties = new Set();
 	const [, updateView] = useReducer(ALWAYS_NEW_VALUE);
 
-
 	useEffect(() => {
 		// prevent reading values after the initial call.
 		locked = true;
 
-		const changed = (change) => {
+		const changed = change => {
 			if (shouldUpdateForChange(change, monitoredProperties)) {
 				updateView();
 			}
@@ -69,31 +67,28 @@ export default function useStoreValue (source = Boolean) {
 		};
 	}, [stores]);
 
-	return new Proxy(BLANK_TARGET,
-		{
-			...BASE_PROXY_TRAPS,
-			get (_, propertyName) {
-				if (locked) {
-					throw new Error(
-						'Do not store a reference to this intermediate proxy. Get values as properties and discard.'
-					);
-				}
-
-				monitoredProperties.add(propertyName);
-				return getValueFromStore(stores, propertyName);
+	return new Proxy(BLANK_TARGET, {
+		...BASE_PROXY_TRAPS,
+		get(_, propertyName) {
+			if (locked) {
+				throw new Error(
+					'Do not store a reference to this intermediate proxy. Get values as properties and discard.'
+				);
 			}
-		}
-	);
+
+			monitoredProperties.add(propertyName);
+			return getValueFromStore(stores, propertyName);
+		},
+	});
 }
 
-
-function addChangeListener (stores, handler) {
+function addChangeListener(stores, handler) {
 	for (const store of stores) {
 		store.addChangeListener(handler);
 	}
 }
 
-function removeChangeListener (stores, handler) {
+function removeChangeListener(stores, handler) {
 	for (const store of stores) {
 		store.removeChangeListener(handler);
 	}

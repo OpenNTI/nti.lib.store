@@ -1,22 +1,25 @@
-import {Load} from '../stores/Constants';
+import { Load } from '../stores/Constants';
 
 export default {
 	defaultFilter: null,
 
-	initMixin () {
+	initMixin() {
 		this.set('filter', this.defaultFilter);
 
 		if (this.addPropsChangeListener) {
 			this.addPropsChangeListener((props, Component) => {
 				if (props.filter !== this.filter) {
 					if (Component.deriveFilterFromProps) {
-						const newFilter = Component.deriveFilterFromProps(props);
+						const newFilter = Component.deriveFilterFromProps(
+							props
+						);
 
-						if(newFilter !== this.filter) {
-							this.updateFilter(Component.deriveFilterFromProps(props));
+						if (newFilter !== this.filter) {
+							this.updateFilter(
+								Component.deriveFilterFromProps(props)
+							);
 						}
-					}
-					else if (props.filter !== this.filter) {
+					} else if (props.filter !== this.filter) {
 						this.updateFilter(props.filter);
 					}
 				}
@@ -24,7 +27,7 @@ export default {
 		}
 	},
 
-	setFilter (term) {
+	setFilter(term) {
 		this.set('filter', term);
 
 		if (this.applyFilter) {
@@ -34,15 +37,13 @@ export default {
 		}
 	},
 
-
-	get filter () {
+	get filter() {
 		return this.get('filter') || this.defaultFilter;
 	},
 
-
-	updateFilter (term) {
+	updateFilter(term) {
 		this.setFilter(term);
 
 		this[Load]();
-	}
+	},
 };

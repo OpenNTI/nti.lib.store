@@ -9,7 +9,7 @@ export default StorePrototype;
 
 export * as Stores from './stores';
 export * as Connectors from './connectors';
-export {default as Interfaces} from './interfaces';
+export { default as Interfaces } from './interfaces';
 export * as Mixins from './mixins';
 
-export {FakeStore} from './Context';
+export { FakeStore } from './Context';

@@ -1,6 +1,6 @@
 const BOUND_MAP = new WeakMap();
 
-export default function getBoundFunction (fn, scope) {
+export default function getBoundFunction(fn, scope) {
 	if (!BOUND_MAP.has(scope)) {
 		BOUND_MAP.set(scope, new WeakMap());
 	}

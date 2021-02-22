@@ -1,17 +1,24 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-const StoreContext = React.createContext({stores: []});
+const StoreContext = React.createContext({ stores: [] });
 
 StoreContextWrapper.Context = StoreContext;
 StoreContextWrapper.Consumer = StoreContext.Consumer;
 StoreContextWrapper.propTypes = {
 	store: PropTypes.object.isRequired,
-	children: PropTypes.any
+	children: PropTypes.any,
 };
-export default function StoreContextWrapper ({store, children, ...otherProps}) {
-	const {stores} = useContext(StoreContext);
-	const context = useMemo(() => ({stores: [...stores, store]}), [...stores, store]);
+export default function StoreContextWrapper({
+	store,
+	children,
+	...otherProps
+}) {
+	const { stores } = useContext(StoreContext);
+	const context = useMemo(() => ({ stores: [...stores, store] }), [
+		...stores,
+		store,
+	]);
 
 	return (
 		<StoreContext.Provider value={context}>
@@ -20,10 +27,9 @@ export default function StoreContextWrapper ({store, children, ...otherProps}) {
 	);
 }
 
-
 FakeStore.propTypes = {
 	mock: PropTypes.object.isRequired,
-	children: PropTypes.any.isRequired
+	children: PropTypes.any.isRequired,
 };
 /**
  * Mock Store for tests
@@ -32,10 +38,6 @@ FakeStore.propTypes = {
  * @param {*} props.children - The children the mock store is for
  * @returns {*} FakeStore wrapped component.
  */
-export function FakeStore ({mock, children}) {
-	return (
-		<StoreContextWrapper store={mock}>
-			{children}
-		</StoreContextWrapper>
-	);
+export function FakeStore({ mock, children }) {
+	return <StoreContextWrapper store={mock}>{children}</StoreContextWrapper>;
 }

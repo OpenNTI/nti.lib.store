@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {HOC} from '@nti/lib-commons';
+import { HOC } from '@nti/lib-commons';
 
-import {getPropsForMap, shouldUpdateForChange} from '../utils';
+import { getPropsForMap, shouldUpdateForChange } from '../utils';
 
 export default class StoreInstanceConnector extends React.Component {
 	/**
@@ -22,7 +22,7 @@ export default class StoreInstanceConnector extends React.Component {
 	 * @param  {Function} onUnmount A callback before the component unmounts.
 	 * @returns {Function}           A Composed Component
 	 */
-	static connect (store, Component, propMap, onMount, onUnmount) {
+	static connect(store, Component, propMap, onMount, onUnmount) {
 		const cmp = React.forwardRef((props, ref) => (
 			<StoreInstanceConnector
 				store={store}
@@ -54,17 +54,14 @@ export default class StoreInstanceConnector extends React.Component {
 		store: PropTypes.shape({
 			get: PropTypes.func.isRequired,
 			addChangeListener: PropTypes.func.isRequired,
-			removeChangeListener: PropTypes.func.isRequired
+			removeChangeListener: PropTypes.func.isRequired,
 		}).isRequired,
 
 		/*
 		 * A mapping of Store-Key to propName.
 		 * Keys present will be retrieved form the store and assigned to a prop passed to our Component/child.
 		 */
-		propMap: PropTypes.oneOfType([
-			PropTypes.object,
-			PropTypes.array
-		]),
+		propMap: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
 		/*
 		 * A function to call when this component mounts. Useful for triggering loads/constructing stores.
@@ -88,29 +85,27 @@ export default class StoreInstanceConnector extends React.Component {
 		/*
 		 * Props to be passed to the child component
 		 */
-		componentProps: PropTypes.any
-	}
+		componentProps: PropTypes.any,
+	};
 
-	constructor (props) {
+	constructor(props) {
 		super(props);
 
-		const {store} = props;
+		const { store } = props;
 
 		this.subscribe(store);
 	}
 
-
-	componentDidMount () {
-		const {onMount} = this.props;
+	componentDidMount() {
+		const { onMount } = this.props;
 
 		if (onMount) {
 			onMount();
 		}
 	}
 
-
-	componentWillUnmount () {
-		const {onUnmount} = this.props;
+	componentWillUnmount() {
+		const { onUnmount } = this.props;
 
 		this.unmounted = true;
 
@@ -123,29 +118,29 @@ export default class StoreInstanceConnector extends React.Component {
 		}
 	}
 
-	componentDidUpdate (prevProps) {
-		const {store} = this.props;
-		const {store: prevStore} = prevProps;
+	componentDidUpdate(prevProps) {
+		const { store } = this.props;
+		const { store: prevStore } = prevProps;
 
 		if (store !== prevStore) {
 			this.subscribe(store);
 		}
 	}
 
-
-	subscribe (store) {
+	subscribe(store) {
 		if (this.unsubscribe) {
 			this.unsubscribe();
 		}
 
 		store.addChangeListener(this.onStoreChange);
 
-		this.unsubscribe = () => (store.removeChangeListener(this.onStoreChange), delete this.unsubscribe);
+		this.unsubscribe = () => (
+			store.removeChangeListener(this.onStoreChange),
+			delete this.unsubscribe
+		);
 	}
 
-
-	onStoreChange = (change) => {
-
+	onStoreChange = change => {
 		if (this.unmounted) {
 			if (this.unsubscribe) {
 				this.unsubscribe();
@@ -157,10 +152,9 @@ export default class StoreInstanceConnector extends React.Component {
 		if (shouldUpdateForChange(change, this.props.propMap)) {
 			this.forceUpdate();
 		}
-	}
+	};
 
-
-	render () {
+	render() {
 		const {
 			component,
 			componentRef: ref,
@@ -179,7 +173,7 @@ export default class StoreInstanceConnector extends React.Component {
 			...storeProps,
 			...componentProps,
 			...otherProps,
-			ref
+			ref,
 		};
 
 		return component

@@ -12,7 +12,7 @@ describe('LoadTracker', () => {
 
 	describe('Instance', () => {
 		test('isCurrent returns truthy if no other tracker is started', () => {
-			const obj =  {};
+			const obj = {};
 			const tracker = LoadTracker.for(obj).startTracker();
 
 			expect(tracker.isCurrent()).toBeTruthy();

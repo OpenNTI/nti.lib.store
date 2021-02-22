@@ -4,26 +4,27 @@ const StateKey = Symbol('State Key');
 const UpdateState = Symbol('Update State');
 const ApplyState = Symbol('Apply State');
 
-function MemoryStorage () {
+function MemoryStorage() {
 	const state = {};
 
 	return {
 		read: key => state[key],
-		write: (key, value) => state[key] = value
+		write: (key, value) => (state[key] = value),
 	};
 }
 
 Stateful.InMemoryStorage = MemoryStorage();
-export default function Stateful (key, properties, storage) {
+export default function Stateful(key, properties, storage) {
 	storage = storage || Stateful.InMemoryStorage;
 
-	if (!storage.read || !storage.write) { throw new Error('Invalid Storage Passed: ', storage); }
-
+	if (!storage.read || !storage.write) {
+		throw new Error('Invalid Storage Passed: ', storage);
+	}
 
 	return createInterface({
 		[createInterface.ID]: 'Stateful',
 
-		initInterface () {
+		initInterface() {
 			let initialized = false;
 
 			const applyDefaultKey = () => {
@@ -36,7 +37,9 @@ export default function Stateful (key, properties, storage) {
 			if (this.addPropsChangeListener) {
 				this.addPropsChangeListener((props, Component) => {
 					if (Component.deriveStateKeyFromProps) {
-						this.setStateKey(Component.deriveStateKeyFromProps(props));
+						this.setStateKey(
+							Component.deriveStateKeyFromProps(props)
+						);
 						initialized = true;
 					} else {
 						applyDefaultKey();
@@ -53,13 +56,11 @@ export default function Stateful (key, properties, storage) {
 			}
 		},
 
-
-		get stateKey () {
+		get stateKey() {
 			return this[StateKey];
 		},
 
-
-		setStateKey (stateKey) {
+		setStateKey(stateKey) {
 			const changed = this.stateKey !== stateKey;
 
 			this[StateKey] = stateKey;
@@ -69,9 +70,10 @@ export default function Stateful (key, properties, storage) {
 			}
 		},
 
-
-		[UpdateState] () {
-			if (!properties) { return; }
+		[UpdateState]() {
+			if (!properties) {
+				return;
+			}
 
 			const state = {};
 
@@ -82,13 +84,16 @@ export default function Stateful (key, properties, storage) {
 			storage.write(this.stateKey, state);
 		},
 
-
-		[ApplyState] () {
-			if (!properties) { return; }
+		[ApplyState]() {
+			if (!properties) {
+				return;
+			}
 
 			const state = storage.read(this.stateKey);
 
-			if (!state) { return; }
+			if (!state) {
+				return;
+			}
 
 			this.set(
 				properties.reduce((acc, prop) => {
@@ -97,6 +102,6 @@ export default function Stateful (key, properties, storage) {
 					return acc;
 				}, {})
 			);
-		}
+		},
 	});
 }

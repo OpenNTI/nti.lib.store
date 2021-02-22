@@ -4,10 +4,10 @@ import TestRenderer from 'react-test-renderer';
 
 import InstanceConnector from '../Instance';
 
-import {InnerCmp, buildStore} from './Common';
+import { InnerCmp, buildStore } from './Common';
 
 class TestCmp extends React.Component {
-	render () {
+	render() {
 		return (
 			<InstanceConnector {...this.props}>
 				<InnerCmp />
@@ -32,11 +32,15 @@ describe('Instance Connector', () => {
 
 			let innerCmpRef = null;
 
-			const Connected = InstanceConnector.connect(store, InnerCmp, propMap);
+			const Connected = InstanceConnector.connect(
+				store,
+				InnerCmp,
+				propMap
+			);
 
-			const testRenderer = TestRenderer.create((
-				<Connected ref={x => innerCmpRef = x} />
-			));
+			const testRenderer = TestRenderer.create(
+				<Connected ref={x => (innerCmpRef = x)} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
@@ -49,11 +53,17 @@ describe('Instance Connector', () => {
 			const onMount = () => {};
 			const onUnmount = () => {};
 
-			const Connected = InstanceConnector.connect(store, InnerCmp, propMap, onMount, onUnmount);
+			const Connected = InstanceConnector.connect(
+				store,
+				InnerCmp,
+				propMap,
+				onMount,
+				onUnmount
+			);
 
-			const testRenderer = TestRenderer.create((
-				<Connected extraProp="foo"/>
-			));
+			const testRenderer = TestRenderer.create(
+				<Connected extraProp="foo" />
+			);
 			const testRoot = testRenderer.root;
 
 			const connector = testRoot.findByType(InstanceConnector);
@@ -70,7 +80,6 @@ describe('Instance Connector', () => {
 		});
 	});
 
-
 	describe('High Order Component', () => {
 		test('onMount and onUnmount props get called', () => {
 			const store = buildStore({});
@@ -78,14 +87,14 @@ describe('Instance Connector', () => {
 			const onMount = jest.fn();
 			const onUnmount = jest.fn();
 
-			const testRenderer = TestRenderer.create((
+			const testRenderer = TestRenderer.create(
 				<TestCmp
 					store={store}
 					propMap={{}}
 					onMount={onMount}
 					onUnmount={onUnmount}
 				/>
-			));
+			);
 
 			expect(onMount).toHaveBeenCalled();
 
@@ -97,12 +106,9 @@ describe('Instance Connector', () => {
 		test('Adds change listener to store and removes it on unmount', () => {
 			const store = buildStore({});
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					store={store}
-					propMap={{}}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp store={store} propMap={{}} />
+			);
 
 			expect(store.getListenerCount()).toEqual(1);
 
@@ -112,14 +118,11 @@ describe('Instance Connector', () => {
 		});
 
 		test('Passes existing store props on initial render', () => {
-			const store = buildStore({key1: 'value1', 'key2': 2});
+			const store = buildStore({ key1: 'value1', key2: 2 });
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					store={store}
-					propMap={['key1', 'key2']}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp store={store} propMap={['key1', 'key2']} />
+			);
 			const testRoot = testRenderer.root;
 
 			const innerCmp = testRoot.findByType(InnerCmp);
@@ -129,14 +132,11 @@ describe('Instance Connector', () => {
 		});
 
 		test('Passes new store props on change event', () => {
-			const store = buildStore({key1: 'initial1', key2: 'initial2'});
+			const store = buildStore({ key1: 'initial1', key2: 'initial2' });
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					store={store}
-					propMap={['key1', 'key2']}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp store={store} propMap={['key1', 'key2']} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
@@ -151,15 +151,12 @@ describe('Instance Connector', () => {
 			expect(innerCmp.props.key2).toEqual('updated2');
 		});
 
-		test('Doesn\'t update if the change event types aren\'t in the propMap', () => {
-			const store = buildStore({key1: 'initial'});
+		test("Doesn't update if the change event types aren't in the propMap", () => {
+			const store = buildStore({ key1: 'initial' });
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					store={store}
-					propMap={['key1']}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp store={store} propMap={['key1']} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 

@@ -1,17 +1,19 @@
 import React from 'react';
 
-import {getPropsForMap, shouldUpdateForChange} from '../utils';
+import { getPropsForMap, shouldUpdateForChange } from '../utils';
 
 import { useResolvedStore } from './resolve-store';
 
-export default function useMonitor (propMap, storePredicate = Boolean) {
+export default function useMonitor(propMap, storePredicate = Boolean) {
 	const monitoring = useResolvedStore(storePredicate);
 
-	const [storeProps, setStoreProps] = React.useState(getPropsForMap(monitoring, propMap));
+	const [storeProps, setStoreProps] = React.useState(
+		getPropsForMap(monitoring, propMap)
+	);
 
 	React.useEffect(() => {
 		const update = () => setStoreProps(getPropsForMap(monitoring, propMap));
-		const onChange = (change) => {
+		const onChange = change => {
 			if (shouldUpdateForChange(change, propMap)) {
 				update();
 			}

@@ -1,8 +1,7 @@
-
 import getValueFromStore from './get-value-from-store';
 import normalizePropMap from './normalize-prop-map';
 
-export default function getPropsForMap (stores, propMap) {
+export default function getPropsForMap(stores, propMap) {
 	if (!Array.isArray(stores)) {
 		stores = [stores];
 	}

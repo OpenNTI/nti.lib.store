@@ -3,8 +3,7 @@ import BoundStore from '../BoundStore';
 
 describe('BoundStore', () => {
 	describe('Instance', () => {
-		describe('propsChanged', () => {
-		});
+		describe('propsChanged', () => {});
 	});
 
 	describe('Static', () => {
@@ -12,7 +11,7 @@ describe('BoundStore', () => {
 			test('throws if the param defined deriveStoreKeyFromProps', () => {
 				expect(() => {
 					BoundStore.validateConnection({
-						deriveStoreKeyFromProps: () => {}
+						deriveStoreKeyFromProps: () => {},
 					});
 				}).toThrow();
 			});
@@ -25,4 +24,3 @@ describe('BoundStore', () => {
 		});
 	});
 });
-

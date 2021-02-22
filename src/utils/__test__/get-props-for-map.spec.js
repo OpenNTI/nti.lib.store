@@ -1,22 +1,22 @@
 /* eslint-env jest */
 import getPropsForMap from '../get-props-for-map';
 
-function buildStore (data) {
+function buildStore(data) {
 	return {
-		get (key) {
+		get(key) {
 			return data[key];
-		}
+		},
 	};
 }
 
 describe('get-props-for-map', () => {
 	test('Only returns data in the prop map', () => {
-		const store = buildStore({key1: 'key1', key2: 'key2', key3: 'key3'});
+		const store = buildStore({ key1: 'key1', key2: 'key2', key3: 'key3' });
 		const propMap = ['key1', 'key2'];
 
 		const props = getPropsForMap(store, propMap);
 
-		expect((Object.keys(props)).length).toEqual(2);
+		expect(Object.keys(props).length).toEqual(2);
 		expect(props).toHaveProperty('key1');
 		expect(props).toHaveProperty('key2');
 		expect(props).not.toHaveProperty('key3');
@@ -24,12 +24,12 @@ describe('get-props-for-map', () => {
 
 	test('Returns value from the last store that defines it', () => {
 		const store1 = buildStore({
-			'store1Key': 'store1Key',
-			'sharedKey': 'sharedKeyStore1'
+			store1Key: 'store1Key',
+			sharedKey: 'sharedKeyStore1',
 		});
 		const store2 = buildStore({
-			'store2Key': 'store2Key',
-			'sharedKey': 'sharedKeyStore2'
+			store2Key: 'store2Key',
+			sharedKey: 'sharedKeyStore2',
 		});
 		const propMap = ['store1Key', 'sharedKey', 'store2Key'];
 

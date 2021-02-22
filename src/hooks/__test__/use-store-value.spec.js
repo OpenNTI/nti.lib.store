@@ -10,7 +10,7 @@ describe('useStoreValue Tests', () => {
 		const dummyStore = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get: (name) => (name === 'someProperty' ? 'foo' : undefined),
+			get: name => (name === 'someProperty' ? 'foo' : undefined),
 		};
 
 		const { result } = renderHook(() => {
@@ -30,7 +30,7 @@ describe('useStoreValue Tests', () => {
 		const dummyStore = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get () {},
+			get() {},
 		};
 
 		const { result } = renderHook(() => {
@@ -49,10 +49,8 @@ describe('useStoreValue Tests', () => {
 		let handler;
 		let value = 'foo';
 		const dummyStore = {
-			addChangeListener: jest
-				.fn()
-				.mockImplementation((x) => (handler = x)),
-			removeChangeListener: jest.fn().mockImplementation((x) => {
+			addChangeListener: jest.fn().mockImplementation(x => (handler = x)),
+			removeChangeListener: jest.fn().mockImplementation(x => {
 				if (x !== handler) {
 					throw new Error(
 						'Simple Test expects exactly the same handler as add'
@@ -60,7 +58,7 @@ describe('useStoreValue Tests', () => {
 				}
 				handler = null;
 			}),
-			get: (name) => (name === 'someProperty' ? value : undefined),
+			get: name => (name === 'someProperty' ? value : undefined),
 		};
 
 		const { unmount, result } = renderHook(
@@ -90,7 +88,7 @@ describe('useStoreValue Tests', () => {
 		const dummyStore = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get: (name) => (name === 'someProperty' ? 'foo' : undefined),
+			get: name => (name === 'someProperty' ? 'foo' : undefined),
 		};
 
 		const wrapper = ({ children }) => (
@@ -108,14 +106,14 @@ describe('useStoreValue Tests', () => {
 		const dummyStore1 = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get () {},
+			get() {},
 		};
 
 		const dummyStore2 = {
 			someIdentifyingMark: true,
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get: (name) => (name === 'someProperty' ? 'foo' : undefined),
+			get: name => (name === 'someProperty' ? 'foo' : undefined),
 		};
 
 		const wrapper = ({ children }) => (
@@ -124,7 +122,7 @@ describe('useStoreValue Tests', () => {
 			</ContextWrapper>
 		);
 
-		const predicate = (store) => store?.someIdentifyingMark;
+		const predicate = store => store?.someIdentifyingMark;
 
 		const { result } = renderHook(
 			() => useStoreValue(predicate).someProperty,
@@ -138,13 +136,13 @@ describe('useStoreValue Tests', () => {
 		const dummyStore1 = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get: (name) => (name === 'someProperty' ? 'foo' : undefined),
+			get: name => (name === 'someProperty' ? 'foo' : undefined),
 		};
 
 		const dummyStore2 = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get: (name) => (name === 'anotherProperty' ? 'bar' : undefined),
+			get: name => (name === 'anotherProperty' ? 'bar' : undefined),
 		};
 
 		const wrapper = ({ children }) => (

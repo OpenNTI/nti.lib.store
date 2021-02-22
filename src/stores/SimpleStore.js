@@ -2,13 +2,13 @@ import EventEmitter from 'events';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {HOC} from '@nti/lib-commons';
+import { HOC } from '@nti/lib-commons';
 
-import {Instance as InstanceConnector} from '../connectors';
+import { Instance as InstanceConnector } from '../connectors';
 import ContextWrapper from '../Context';
-import {useMonitor, useStoreValue} from '../hooks';
+import { useMonitor, useStoreValue } from '../hooks';
 
-import {ChangeEvent, Load} from './Constants';
+import { ChangeEvent, Load } from './Constants';
 
 const Instances = Symbol('Instances');
 const Singleton = Symbol('Singleton');
@@ -20,15 +20,15 @@ const ChangedKeys = Symbol('ChangedKeys');
 
 const LoadTimeout = Symbol('Load Timeout');
 
-
 // turn (key, value) into {key: value}
-const ensureObject = (key, value) => typeof key === 'object' ? key : {[key]: value};
+const ensureObject = (key, value) =>
+	typeof key === 'object' ? key : { [key]: value };
 
 export default class SimpleStore extends EventEmitter {
 	//set to true if you want any connected component to have the same store instance
-	static Singleton = false
+	static Singleton = false;
 
-	static getStore (key) {
+	static getStore(key) {
 		const Store = this;
 
 		if (this.Singleton) {
@@ -44,7 +44,7 @@ export default class SimpleStore extends EventEmitter {
 		if (!this[Instances][key]) {
 			this[Instances][key] = {
 				count: 1,
-				store: new Store()
+				store: new Store(),
 			};
 			this[Instances][key].store[StoreKey] = key;
 		} else {
@@ -54,9 +54,15 @@ export default class SimpleStore extends EventEmitter {
 		return this[Instances][key].store;
 	}
 
-
-	static freeStore (key) {
-		if (this.Singleton || !key || !this[Instances] || !this[Instances][key]) { return; }
+	static freeStore(key) {
+		if (
+			this.Singleton ||
+			!key ||
+			!this[Instances] ||
+			!this[Instances][key]
+		) {
+			return;
+		}
 
 		this[Instances][key].count--;
 
@@ -65,9 +71,7 @@ export default class SimpleStore extends EventEmitter {
 				delete this[Instances][key];
 			}
 		});
-
 	}
-
 
 	/**
 	 * Create a component to render around the InstanceConnector
@@ -76,24 +80,27 @@ export default class SimpleStore extends EventEmitter {
 	 * @param  {Object} Component the class of the component that is being connected
 	 * @returns {Object}           the wrapper component to render
 	 */
-	static buildConnectorCmp (Component) {}
+	static buildConnectorCmp(Component) {}
 
-	static validateConnection (Component) {}
+	static validateConnection(Component) {}
 
-	static useMonitor (propMap) {
+	static useMonitor(propMap) {
 		const instance = this;
-		return useMonitor(propMap, (s) => s instanceof instance);
+		return useMonitor(propMap, s => s instanceof instance);
 	}
 
-	static useValue () {
+	static useValue() {
 		const StoreClass = this;
-		const selector = React.useMemo(() => store => store instanceof StoreClass, [StoreClass]);
+		const selector = React.useMemo(
+			() => store => store instanceof StoreClass,
+			[StoreClass]
+		);
 		return useStoreValue(selector);
 	}
 
-	static monitor (propMap = {}, storeProp = 'store') {
+	static monitor(propMap = {}, storeProp = 'store') {
 		const instance = this;
-		const getClosestStore = (stores) => {
+		const getClosestStore = stores => {
 			for (let i = stores.length - 1; i >= 0; i--) {
 				const store = stores[i];
 
@@ -105,16 +112,16 @@ export default class SimpleStore extends EventEmitter {
 			return null;
 		};
 
-		return (Component) => {
+		return Component => {
 			const name = 'StoreMonitor';
 			const MonitorWrapper = (props, ref) => {
-				const {stores} = React.useContext(ContextWrapper.Context);
+				const { stores } = React.useContext(ContextWrapper.Context);
 				const store = getClosestStore(stores);
 
 				if (!store) {
 					return React.createElement(Component, {
 						...props,
-						ref
+						ref,
 					});
 				}
 
@@ -123,7 +130,7 @@ export default class SimpleStore extends EventEmitter {
 					propMap,
 					component: Component,
 					componentRef: ref,
-					componentProps: {...props, [storeProp]: store}
+					componentProps: { ...props, [storeProp]: store },
 				});
 			};
 			const cmp = React.forwardRef(MonitorWrapper);
@@ -135,18 +142,19 @@ export default class SimpleStore extends EventEmitter {
 	}
 
 	static compose = this.WrapCmp;
-	static WrapCmp (Cmp, config = {}) {
-		const {deriveStoreKeyFromProps} = config;
+	static WrapCmp(Cmp, config = {}) {
+		const { deriveStoreKeyFromProps } = config;
 
 		this?.validateConfig?.(config);
 
 		const getStoreKey = props => deriveStoreKeyFromProps?.(props) ?? null;
-		const getStore = (key) => this.getStore(key);
-		const freeStore = (key) => this.freeStore(key);
+		const getStore = key => this.getStore(key);
+		const freeStore = key => this.freeStore(key);
 
-		const useWrapperEffects = (store, props) => this?.useWrapperEffects?.(store, props, Cmp, config);
+		const useWrapperEffects = (store, props) =>
+			this?.useWrapperEffects?.(store, props, Cmp, config);
 
-		function WrappedCmp (props, ref) {
+		function WrappedCmp(props, ref) {
 			const key = getStoreKey(props);
 			const initial = React.useRef(true);
 
@@ -173,8 +181,8 @@ export default class SimpleStore extends EventEmitter {
 
 			return React.createElement(
 				ContextWrapper,
-				{store},
-				React.createElement(Cmp, {...props, ref})
+				{ store },
+				React.createElement(Cmp, { ...props, ref })
 			);
 		}
 
@@ -186,84 +194,98 @@ export default class SimpleStore extends EventEmitter {
 		return forwarded;
 	}
 
-	static connect (propMap = {}, storeProp = 'store') {
-		return (Component) => {
+	static connect(propMap = {}, storeProp = 'store') {
+		return Component => {
 			this.validateConnection(Component);
 
 			const Wrapper = this.buildConnectorCmp(Component);
-			const getStoreKey = props => Component.deriveStoreKeyFromProps ? Component.deriveStoreKeyFromProps(props) : null;
-			const getStore = (key) => this.getStore(key);
-			const freeStore = (key) => this.freeStore(key);
+			const getStoreKey = props =>
+				Component.deriveStoreKeyFromProps
+					? Component.deriveStoreKeyFromProps(props)
+					: null;
+			const getStore = key => this.getStore(key);
+			const freeStore = key => this.freeStore(key);
 
 			class StoreConnector extends React.Component {
 				static propTypes = {
-					forwardRef: PropTypes.func
-				}
+					forwardRef: PropTypes.func,
+				};
 
-				state = {}
+				state = {};
 
-				constructor (props) {
+				constructor(props) {
 					super(props);
 
 					this.state = {
-						store: getStore(getStoreKey(props))
+						store: getStore(getStoreKey(props)),
 					};
 				}
 
-				componentDidUpdate () {
+				componentDidUpdate() {
 					this.setupFor(this.props);
 				}
 
-
-				componentWillUnmount () {
+				componentWillUnmount() {
 					freeStore(getStoreKey(this.props));
 				}
 
+				setupFor(props) {
+					const { store } = this.state;
 
-				setupFor (props) {
-					const {store} = this.state;
-
-					if (!store || store[StoreKey] === Singleton) { return; }
+					if (!store || store[StoreKey] === Singleton) {
+						return;
+					}
 
 					const key = getStoreKey(props);
-					const keyChanged = (store[StoreKey] || key) ? store[StoreKey] !== key : false;
+					const keyChanged =
+						store[StoreKey] || key
+							? store[StoreKey] !== key
+							: false;
 
 					if (keyChanged) {
 						this.setState({
-							store: getStore(key)
+							store: getStore(key),
 						});
 					}
 				}
 
+				render() {
+					const { forwardRef, ...componentProps } = this.props;
+					const { store } = this.state;
 
-				render () {
-					const {forwardRef, ...componentProps} = this.props;
-					const {store} = this.state;
-
-					const child = React.createElement(
-						InstanceConnector,
-						{
-							store,
-							propMap,
-							component: Component,
-							componentRef: forwardRef,
-							componentProps: {...componentProps, [storeProp]: store}
+					const child = React.createElement(InstanceConnector, {
+						store,
+						propMap,
+						component: Component,
+						componentRef: forwardRef,
+						componentProps: {
+							...componentProps,
+							[storeProp]: store,
 						},
-					);
+					});
 
 					return React.createElement(
 						ContextWrapper,
-						{store},
-						Wrapper ?
-							React.createElement(Wrapper, {...componentProps, store}, child) :
-							child
+						{ store },
+						Wrapper
+							? React.createElement(
+									Wrapper,
+									{ ...componentProps, store },
+									child
+							  )
+							: child
 					);
 				}
 			}
 
-			const name = Wrapper ? Wrapper.displayName || Wrapper.name : 'SimpleStoreConnector';
+			const name = Wrapper
+				? Wrapper.displayName || Wrapper.name
+				: 'SimpleStoreConnector';
 			const ConnectorWrapper = (props, ref) => {
-				return React.createElement(StoreConnector, {...props, forwardRef: ref});
+				return React.createElement(StoreConnector, {
+					...props,
+					forwardRef: ref,
+				});
 			};
 			const cmp = React.forwardRef(ConnectorWrapper);
 
@@ -273,8 +295,7 @@ export default class SimpleStore extends EventEmitter {
 		};
 	}
 
-
-	constructor () {
+	constructor() {
 		super();
 
 		this.setMaxListeners(100);
@@ -289,12 +310,12 @@ export default class SimpleStore extends EventEmitter {
 		}
 	}
 
-	get storeKey () {
+	get storeKey() {
 		return this[StoreKey];
 	}
 
-	clear (immediate) {
-		const {length} = this[ChangedKeys] = Object.keys(this[Data]);
+	clear(immediate) {
+		const { length } = (this[ChangedKeys] = Object.keys(this[Data]));
 
 		if (length) {
 			this[Data] = {};
@@ -302,15 +323,15 @@ export default class SimpleStore extends EventEmitter {
 		}
 	}
 
-	get (key) {
+	get(key) {
 		const data = this[Data][key];
 
 		return data !== undefined ? data : this[key];
 	}
 
-	[Set] (props, immediate) {
+	[Set](props, immediate) {
 		this[ChangedKeys] = this[ChangedKeys] || [];
-		this[Data] = {...this[Data], ...props};
+		this[Data] = { ...this[Data], ...props };
 		this[ChangedKeys] = [...this[ChangedKeys], ...Object.keys(props)];
 
 		immediate ? this.emitChange() : this.scheduleEmit();
@@ -322,7 +343,7 @@ export default class SimpleStore extends EventEmitter {
 	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
 	 * @returns {void}
 	 */
-	setImmediate (key, value) {
+	setImmediate(key, value) {
 		return this[Set](ensureObject(key, value), true);
 	}
 
@@ -332,20 +353,21 @@ export default class SimpleStore extends EventEmitter {
 	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
 	 * @returns {void}
 	 */
-	set (key, value) {
+	set(key, value) {
 		return this[Set](ensureObject(key, value));
 	}
 
-	scheduleEmit (...args) {
-		if (this.emitChangeTimeout) { return; }
+	scheduleEmit(...args) {
+		if (this.emitChangeTimeout) {
+			return;
+		}
 
 		this.emitChangeTimeout = setImmediate(() => {
 			this.emitChange(...args);
 		});
 	}
 
-
-	emitChange (changedType) {
+	emitChange(changedType) {
 		clearImmediate(this.emitChangeTimeout);
 		delete this.emitChangeTimeout;
 
@@ -355,31 +377,34 @@ export default class SimpleStore extends EventEmitter {
 			changedType = [changedType];
 		}
 
-		const type = this[ChangedKeys] ? [...changedType, ...this[ChangedKeys]] : changedType;
+		const type = this[ChangedKeys]
+			? [...changedType, ...this[ChangedKeys]]
+			: changedType;
 
 		this.emit(ChangeEvent, {
-			type: type.length > 1 ? type : type[0]
+			type: type.length > 1 ? type : type[0],
 		});
 
 		this[ChangedKeys] = null;
 	}
 
-
-	addChangeListener (fn) {
+	addChangeListener(fn) {
 		this.removeChangeListener(fn);
 		this.addListener(ChangeEvent, fn);
 	}
 
-
-	removeChangeListener (fn) {
+	removeChangeListener(fn) {
 		this.removeListener(ChangeEvent, fn);
 	}
 
-	[Load] () {
-		if (!this.load) { return; }
+	[Load]() {
+		if (!this.load) {
+			return;
+		}
 
 		if (!this[LoadTimeout]) {
-			this[LoadTimeout] = setImmediate(() => { // window.setImmediate, not this.setImmediate
+			this[LoadTimeout] = setImmediate(() => {
+				// window.setImmediate, not this.setImmediate
 				this.load();
 				delete this[LoadTimeout];
 			});

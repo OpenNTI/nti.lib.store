@@ -5,7 +5,9 @@ describe('get-bound-function', () => {
 	test('actually calls the bound function', () => {
 		let called = false;
 
-		const fn = getBoundFunction(() => { called = true; }, {});
+		const fn = getBoundFunction(() => {
+			called = true;
+		}, {});
 
 		fn();
 
@@ -16,6 +18,8 @@ describe('get-bound-function', () => {
 		const fn = () => {};
 		const scope = {};
 
-		expect(getBoundFunction(fn, scope)).toEqual(getBoundFunction(fn, scope));
+		expect(getBoundFunction(fn, scope)).toEqual(
+			getBoundFunction(fn, scope)
+		);
 	});
 });

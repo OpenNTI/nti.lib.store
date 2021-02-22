@@ -1,14 +1,23 @@
 const INTERFACES = Symbol('Interfaces');
 const INTERFACE_ID = Symbol('Interface ID');
 
-const { defineProperty, getOwnPropertyDescriptor, getOwnPropertyNames, getOwnPropertySymbols, hasOwnProperty: has } = Object;
+const {
+	defineProperty,
+	getOwnPropertyDescriptor,
+	getOwnPropertyNames,
+	getOwnPropertySymbols,
+	hasOwnProperty: has,
+} = Object;
 const hasOwnProperty = (x, k) => has.call(x, k);
 
-const getOwnProperties = getOwnPropertySymbols ?
-	(object) => [...getOwnPropertyNames(object), ...getOwnPropertySymbols(object)] :
-	getOwnPropertyNames;
+const getOwnProperties = getOwnPropertySymbols
+	? object => [
+			...getOwnPropertyNames(object),
+			...getOwnPropertySymbols(object),
+	  ]
+	: getOwnPropertyNames;
 
-const getOwnPropertyDescriptors = (object) => {
+const getOwnPropertyDescriptors = object => {
 	const descs = {};
 
 	for (let key of getOwnProperties(object)) {
@@ -22,10 +31,12 @@ const inPrototype = (object, key) => {
 	const base = Object.getPrototypeOf(object || {});
 	const proto = (object || {}).prototype;
 
-	return Boolean(proto && (hasOwnProperty(proto, key) || inPrototype(base, key)));
+	return Boolean(
+		proto && (hasOwnProperty(proto, key) || inPrototype(base, key))
+	);
 };
 
-function getInterfaces (target) {
+function getInterfaces(target) {
 	let seen = [];
 	let proto = target;
 
@@ -38,16 +49,20 @@ function getInterfaces (target) {
 	}
 
 	//flatten and unique
-	return seen.reduce((a, b) => !b ? a : [...a, ...b.filter(x => !a.includes(x))], []);
+	return seen.reduce(
+		(a, b) => (!b ? a : [...a, ...b.filter(x => !a.includes(x))]),
+		[]
+	);
 }
 
-
-function hasBeenApplied (target, partial) {
+function hasBeenApplied(target, partial) {
 	const interfaces = getInterfaces(target);
 
-	if (!interfaces || !interfaces.length) { return false; }
+	if (!interfaces || !interfaces.length) {
+		return false;
+	}
 
-	return interfaces.some((p) => {
+	return interfaces.some(p => {
 		if (p[INTERFACE_ID] || partial[INTERFACE_ID]) {
 			return p[INTERFACE_ID] === partial[INTERFACE_ID];
 		}
@@ -56,8 +71,7 @@ function hasBeenApplied (target, partial) {
 	});
 }
 
-
-function initInterfaces (...args) {
+function initInterfaces(...args) {
 	const list = getInterfaces(this.constructor);
 
 	for (let partial of list) {
@@ -69,18 +83,27 @@ function initInterfaces (...args) {
 	}
 }
 
-
-function applyPartial (target, partial) {
+function applyPartial(target, partial) {
 	if (hasBeenApplied(target, partial)) {
-		throw new SyntaxError('Interface: cannot use same interface more than once.');
+		throw new SyntaxError(
+			'Interface: cannot use same interface more than once.'
+		);
 	}
 
-	if (inPrototype(target, 'initInterfaces') && target.prototype.initInterfaces !== initInterfaces) {
-		throw new TypeError(`Interface: ${target.name} defins an initInterfaces property. This method must be defined by they interface decorator.`);
+	if (
+		inPrototype(target, 'initInterfaces') &&
+		target.prototype.initInterfaces !== initInterfaces
+	) {
+		throw new TypeError(
+			`Interface: ${target.name} defins an initInterfaces property. This method must be defined by they interface decorator.`
+		);
 	}
 
-	if (target[INTERFACES]) { target[INTERFACES] = [target[INTERFACES], partial]; }
-	else { target[INTERFACES] = [partial]; }
+	if (target[INTERFACES]) {
+		target[INTERFACES] = [target[INTERFACES], partial];
+	} else {
+		target[INTERFACES] = [partial];
+	}
 
 	if (!target.prototype.initInterfaces) {
 		target.prototype.initInterfaces = initInterfaces;
@@ -104,9 +127,8 @@ function applyPartial (target, partial) {
 	return target;
 }
 
-
 createInterface.ID = INTERFACE_ID;
-export default function createInterface (partial) {
+export default function createInterface(partial) {
 	if (typeof partial !== 'object') {
 		throw new SyntaxError('Interface: must be an object');
 	}

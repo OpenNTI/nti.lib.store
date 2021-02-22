@@ -4,11 +4,10 @@ const ApplyState = Symbol('ApplyState');
 
 const State = {};
 
-
 export default {
 	StatefulProperties: null,
 
-	initMixin () {
+	initMixin() {
 		if (this.addPropsChangeListener) {
 			this.addPropsChangeListener((props, Component) => {
 				if (Component.deriveStateKeyFromProps) {
@@ -24,13 +23,11 @@ export default {
 		}
 	},
 
-
-	get stateKey () {
+	get stateKey() {
 		return this[StateKey];
 	},
 
-
-	setStateKey (stateKey) {
+	setStateKey(stateKey) {
 		const changed = this[StateKey] !== stateKey;
 
 		this[StateKey] = stateKey;
@@ -40,9 +37,10 @@ export default {
 		}
 	},
 
-
-	[UpdateState] () {
-		if (!this.StatefulProperties) { return; }
+	[UpdateState]() {
+		if (!this.StatefulProperties) {
+			return;
+		}
 
 		let state = {};
 
@@ -53,18 +51,19 @@ export default {
 		State[this.stateKey] = state;
 	},
 
-
-	[ApplyState] () {
-		if (!this.StatefulProperties) { return; }
+	[ApplyState]() {
+		if (!this.StatefulProperties) {
+			return;
+		}
 
 		const state = State[this.stateKey];
 
-		if(!state) {
+		if (!state) {
 			return;
 		}
 
 		for (let property of this.StatefulProperties) {
 			this.set(property, state[property]);
 		}
-	}
+	},
 };

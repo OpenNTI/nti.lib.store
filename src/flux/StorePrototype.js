@@ -10,12 +10,12 @@ const Handlers = Symbol('Handler Map');
 const GetHandler = Symbol('GetHandler protected method');
 
 export default class StorePrototype extends TypedEventEmitter {
-
-	constructor () {
+	constructor() {
 		super();
-		this[RegisteredCallbackID] = AppDispatcher.register(this.handleDispatch.bind(this));
+		this[RegisteredCallbackID] = AppDispatcher.register(
+			this.handleDispatch.bind(this)
+		);
 	}
-
 
 	/**
 	 * @param {Object} handlers - a dictionary of actionTypes to
@@ -24,22 +24,25 @@ export default class StorePrototype extends TypedEventEmitter {
 	 *
 	 * @returns {void}
 	 */
-	registerHandlers (handlers) {
+	registerHandlers(handlers) {
 		//TODO: merge, if a key exists, chain the handler call. Test the
 		//	return value of the original, if its ===false, return false
 		//	without calling the chained method.
 		this[Handlers] = handlers;
 	}
 
-
-	[GetHandler] (type) {
+	[GetHandler](type) {
 		let handler;
 		let handlerKey = (this[Handlers] || {})[type];
 		if (handlerKey) {
 			if (typeof handlerKey !== 'function') {
 				handler = this[handlerKey];
 				if (!handler || typeof handler !== 'function') {
-					logger.warn('The key (%s) registered to handle dispatched events of type %s does not point to a function: %s', handlerKey, type);
+					logger.warn(
+						'The key (%s) registered to handle dispatched events of type %s does not point to a function: %s',
+						handlerKey,
+						type
+					);
 				}
 			} else {
 				handler = handlerKey;
@@ -48,15 +51,17 @@ export default class StorePrototype extends TypedEventEmitter {
 		return handler;
 	}
 
-
-	handleDispatch (payload) {
-		let {action} = payload;
+	handleDispatch(payload) {
+		let { action } = payload;
 		if (!action) {
-			logger.error('Dispatched payload does not have an action. %o', payload);
+			logger.error(
+				'Dispatched payload does not have an action. %o',
+				payload
+			);
 			return;
 		}
 
-		let {type} = action;
+		let { type } = action;
 		if (!type) {
 			logger.error('Dispatched action does not have a type: %o', payload);
 			return;
@@ -67,5 +72,4 @@ export default class StorePrototype extends TypedEventEmitter {
 			method.call(this, payload);
 		}
 	}
-
 }

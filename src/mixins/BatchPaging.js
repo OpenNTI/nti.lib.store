@@ -1,7 +1,7 @@
 const Batch = Symbol('batch');
 
 export default {
-	setBatch (batch) {
+	setBatch(batch) {
 		this[Batch] = batch;
 
 		if (this.applyBatch) {
@@ -11,36 +11,51 @@ export default {
 			this.set('total', this.getTotalFromBatch(batch));
 			this.set('currentPage', this.getCurrentPageFromBatch(batch));
 			this.set('hasNextPage', this.getHasNextPageFromBatch(batch));
-			this.set('getHasPrevPageFromBatch', this.getHasPrevPageFromBatch(batch));
+			this.set(
+				'getHasPrevPageFromBatch',
+				this.getHasPrevPageFromBatch(batch)
+			);
 		}
 	},
 
-	getItemsFromBatch (batch) {
-		if (!batch) { return null; }
+	getItemsFromBatch(batch) {
+		if (!batch) {
+			return null;
+		}
 
 		return batch.Items;
 	},
 
-	getTotalFromBatch (batch) {
-		if (!batch) { return null; }
+	getTotalFromBatch(batch) {
+		if (!batch) {
+			return null;
+		}
 
-		return batch.FilteredTotalItemCount != null ? batch.FilteredTotalItemCount : batch.TotalCount;
+		return batch.FilteredTotalItemCount != null
+			? batch.FilteredTotalItemCount
+			: batch.TotalCount;
 	},
 
-	getCurrentPageFromBatch (batch) {
-		if (!batch) { return null; }
+	getCurrentPageFromBatch(batch) {
+		if (!batch) {
+			return null;
+		}
 
 		return batch.BatchPage;
 	},
 
-	getHasNextPageFromBatch (batch) {
-		if (!batch) { return null; }
+	getHasNextPageFromBatch(batch) {
+		if (!batch) {
+			return null;
+		}
 
 		return batch.hasLink('batch-next');
 	},
 
-	getHasPrevPageFromBatch (batch) {
-		if (!batch) { return null; }
+	getHasPrevPageFromBatch(batch) {
+		if (!batch) {
+			return null;
+		}
 
 		return batch.hasLink('batch-prev');
 	},
@@ -50,7 +65,7 @@ export default {
 	 *
 	 * @returns {void}
 	 */
-	loadNextPage () {
+	loadNextPage() {
 		this.loadPage(this.get('currentPage') + 1);
 	},
 
@@ -59,7 +74,7 @@ export default {
 	 *
 	 * @returns {void}
 	 */
-	loadPrevPage () {
+	loadPrevPage() {
 		this.loadPage(this.get('currentPage') - 1);
 	},
 
@@ -70,5 +85,5 @@ export default {
 	 * @param  {number} index the page to load
 	 * @returns {void}
 	 */
-	loadPage (index) {}
+	loadPage(index) {},
 };

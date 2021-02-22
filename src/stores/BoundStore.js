@@ -2,20 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import SimpleStore from './SimpleStore';
-import {PropsChangeEvent, Load} from './Constants';
+import { PropsChangeEvent, Load } from './Constants';
 
 const SetBinding = Symbol('Set Binding');
 const Binding = Symbol('Binding');
 
-
 export default class BoundStore extends SimpleStore {
-	static validateConnection (Component) {
+	static validateConnection(Component) {
 		if (Component.deriveStoreKeyFromProps) {
-			throw new Error('Components connected to a bound store cannot define deriveStoreKeyFromProps. Check: ', Component.displayName || Component.name);
+			throw new Error(
+				'Components connected to a bound store cannot define deriveStoreKeyFromProps. Check: ',
+				Component.displayName || Component.name
+			);
 		}
 	}
 
-	static useWrapperEffects (store, props, Cmp, config) {
+	static useWrapperEffects(store, props, Cmp, config) {
 		const binding = config?.deriveBindingFromProps?.(props) ?? null;
 
 		store?.[SetBinding](binding);
@@ -25,41 +27,44 @@ export default class BoundStore extends SimpleStore {
 		});
 	}
 
-	static buildConnectorCmp (Component) {
-		const deriveBinding = (props) => Component.deriveBindingFromProps ? Component.deriveBindingFromProps(props) : null;
+	static buildConnectorCmp(Component) {
+		const deriveBinding = props =>
+			Component.deriveBindingFromProps
+				? Component.deriveBindingFromProps(props)
+				: null;
 
 		class BoundStoreWrapper extends React.Component {
 			static propTypes = {
 				store: PropTypes.shape({
 					onPropsChange: PropTypes.func.isRequired,
-					cleanup: PropTypes.func
+					cleanup: PropTypes.func,
 				}).isRequired,
-				children: PropTypes.any
-			}
+				children: PropTypes.any,
+			};
 
-			componentDidMount () {
+			componentDidMount() {
 				this.setupFor(this.props);
 			}
 
-			componentDidUpdate (old) {
+			componentDidUpdate(old) {
 				this.setupFor(this.props);
 			}
 
-			componentWillUnmount () {
+			componentWillUnmount() {
 				if (this.props.store.cleanup) {
 					this.props.store.cleanup();
 				}
 			}
 
-			setupFor (props) {
-				const {store} = props;
+			setupFor(props) {
+				const { store } = props;
 				const binding = deriveBinding(props);
 
 				store[SetBinding](binding);
 				store.onPropsChange(props, Component);
 			}
 
-			render () {
+			render() {
 				return this.props.children;
 			}
 		}
@@ -67,14 +72,11 @@ export default class BoundStore extends SimpleStore {
 		return BoundStoreWrapper;
 	}
 
-
-	bindingDidUpdate (prevBinding) {
+	bindingDidUpdate(prevBinding) {
 		return this[Binding] !== prevBinding;
 	}
 
-
-
-	[SetBinding] (binding) {
+	[SetBinding](binding) {
 		const oldBinding = this[Binding];
 
 		this[Binding] = binding;
@@ -84,24 +86,20 @@ export default class BoundStore extends SimpleStore {
 		}
 	}
 
-
-	get binding () {
+	get binding() {
 		return this[Binding];
 	}
 
-
-	onPropsChange (props, Component) {
+	onPropsChange(props, Component) {
 		this.emit(PropsChangeEvent, props, Component);
 	}
 
-
-	addPropsChangeListener (fn) {
+	addPropsChangeListener(fn) {
 		this.removePropsChangeListener(fn);
 		this.addListener(PropsChangeEvent, fn);
 	}
 
-
-	removePropsChangeListener (fn) {
+	removePropsChangeListener(fn) {
 		this.removeListener(PropsChangeEvent, fn);
 	}
 }

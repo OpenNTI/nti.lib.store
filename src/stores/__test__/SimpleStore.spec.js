@@ -3,14 +3,14 @@ import React from 'react';
 import TestRenderer from 'react-test-renderer';
 
 import SimpleStore from '../SimpleStore';
-import {ChangeEvent, Load} from '../Constants';
+import { ChangeEvent, Load } from '../Constants';
 import StoreContext from '../../Context';
-import {Instance as InstanceConnector} from '../../connectors';
+import { Instance as InstanceConnector } from '../../connectors';
 
 describe('SimpleStore', () => {
 	describe('Instance', () => {
 		class TestStore extends SimpleStore {
-			classProperty = 'classProperty'
+			classProperty = 'classProperty';
 		}
 
 		test('defines methods necessary for the connectors', () => {
@@ -25,7 +25,7 @@ describe('SimpleStore', () => {
 			let initCalled = false;
 
 			class MixinStore extends SimpleStore {
-				initMixins () {
+				initMixins() {
 					initCalled = true;
 				}
 			}
@@ -62,11 +62,11 @@ describe('SimpleStore', () => {
 		});
 
 		describe('set', () => {
-			beforeEach (() => {
+			beforeEach(() => {
 				jest.useFakeTimers();
 			});
 
-			afterEach (() => {
+			afterEach(() => {
 				jest.useRealTimers();
 			});
 
@@ -85,7 +85,7 @@ describe('SimpleStore', () => {
 
 				store.set({
 					key: 'value',
-					foo: 'bar'
+					foo: 'bar',
 				});
 
 				expect(store.get('key')).toEqual('value');
@@ -116,7 +116,7 @@ describe('SimpleStore', () => {
 
 				store.set('key', 'value');
 				store.set({
-					foo: 'bar'
+					foo: 'bar',
 				});
 
 				jest.runAllTimers();
@@ -126,11 +126,11 @@ describe('SimpleStore', () => {
 		});
 
 		describe('changes', () => {
-			beforeEach (() => {
+			beforeEach(() => {
 				jest.useFakeTimers();
 			});
 
-			afterEach (() => {
+			afterEach(() => {
 				jest.useRealTimers();
 			});
 
@@ -152,7 +152,9 @@ describe('SimpleStore', () => {
 				store.emitChange('key');
 
 				expect(store.emit).toHaveBeenCalledTimes(1);
-				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {type: 'key'});
+				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {
+					type: 'key',
+				});
 			});
 
 			test('emitChange include any changed keys', () => {
@@ -162,15 +164,17 @@ describe('SimpleStore', () => {
 
 				store.set('key', 'value');
 				store.set({
-					'foo': 'bar',
-					'prop': 'value'
+					foo: 'bar',
+					prop: 'value',
 				});
 
 				store.emitChange('change');
 
 				expect(store.emit).toHaveBeenCalledTimes(1);
 				//unfortunately the order of the type array matters...
-				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {type: ['change', 'key', 'foo', 'prop']});
+				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {
+					type: ['change', 'key', 'foo', 'prop'],
+				});
 			});
 
 			test('emitChange emits changed keys even if no argument is passed', () => {
@@ -180,15 +184,17 @@ describe('SimpleStore', () => {
 
 				store.set('key', 'value');
 				store.set({
-					'foo': 'bar',
-					'prop': 'value'
+					foo: 'bar',
+					prop: 'value',
 				});
 
 				store.emitChange();
 
 				expect(store.emit).toHaveBeenCalledTimes(1);
 				//unfortunately the order of the type array matters...
-				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {type: ['key', 'foo', 'prop']});
+				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {
+					type: ['key', 'foo', 'prop'],
+				});
 			});
 
 			test('emitChange nulls out any changed keys', () => {
@@ -200,20 +206,21 @@ describe('SimpleStore', () => {
 				store.emitChange();
 
 				expect(store.emit).toHaveBeenCalledTimes(1);
-				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {type: 'key'});
+				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {
+					type: 'key',
+				});
 
 				store.set('foo', 'bar');
 				store.emitChange();
 
 				expect(store.emit).toHaveBeenCalledTimes(2);
-				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {type: 'foo'});
+				expect(store.emit).toHaveBeenLastCalledWith(ChangeEvent, {
+					type: 'foo',
+				});
 			});
 
 			test('emitting the change event calls change listeners', () => {
-				const listeners = [
-					jest.fn(),
-					jest.fn()
-				];
+				const listeners = [jest.fn(), jest.fn()];
 				const arg = 'arg';
 
 				const store = new TestStore();
@@ -258,14 +265,14 @@ describe('SimpleStore', () => {
 
 		describe('[Load]', () => {
 			class LoadStore extends SimpleStore {
-				load () {}
+				load() {}
 			}
 
-			beforeEach (() => {
+			beforeEach(() => {
 				jest.useFakeTimers();
 			});
 
-			afterEach (() => {
+			afterEach(() => {
 				jest.useRealTimers();
 			});
 
@@ -309,28 +316,35 @@ describe('SimpleStore', () => {
 				expect(store.load).toHaveBeenCalledTimes(2);
 			});
 		});
-
 	});
 
 	describe('Static', () => {
 		describe('getStore', () => {
 			test('Singleton stores return the same instance every time', () => {
 				class TestStore extends SimpleStore {
-					static Singleton = true
+					static Singleton = true;
 				}
 
 				expect(TestStore.getStore()).toBeInstanceOf(TestStore);
 				expect(TestStore.getStore()).toBe(TestStore.getStore());
-				expect(TestStore.getStore('store1')).toBe(TestStore.getStore('store2'));
+				expect(TestStore.getStore('store1')).toBe(
+					TestStore.getStore('store2')
+				);
 			});
 
 			test('Passing the same key returns the same instance', () => {
 				class TestStore extends SimpleStore {}
 
 				expect(TestStore.getStore()).toBeInstanceOf(TestStore);
-				expect(TestStore.getStore('store1')).toBe(TestStore.getStore('store1'));
-				expect(TestStore.getStore('store2')).toBe(TestStore.getStore('store2'));
-				expect(TestStore.getStore('store1')).not.toBe(TestStore.getStore('store2'));
+				expect(TestStore.getStore('store1')).toBe(
+					TestStore.getStore('store1')
+				);
+				expect(TestStore.getStore('store2')).toBe(
+					TestStore.getStore('store2')
+				);
+				expect(TestStore.getStore('store1')).not.toBe(
+					TestStore.getStore('store2')
+				);
 			});
 
 			test('Passing no key returns a new instance everytime', () => {
@@ -347,14 +361,10 @@ describe('SimpleStore', () => {
 		class TestStore extends SimpleStore {}
 
 		class InnerCmp extends React.Component {
-			static staticMethod = () => {}
+			static staticMethod = () => {};
 
-			render () {
-				return (
-					<div>
-						Inner Cmp
-					</div>
-				);
+			render() {
+				return <div>Inner Cmp</div>;
 			}
 		}
 
@@ -369,9 +379,9 @@ describe('SimpleStore', () => {
 
 			let innerCmpRef = null;
 
-			const testRenderer = TestRenderer.create((
-				<Connected ref={x => innerCmpRef = x} />
-			));
+			const testRenderer = TestRenderer.create(
+				<Connected ref={x => (innerCmpRef = x)} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
@@ -380,7 +390,7 @@ describe('SimpleStore', () => {
 
 		test('Throws if validateConnection throws', () => {
 			class InvalidStore extends SimpleStore {
-				static validateConnection () {
+				static validateConnection() {
 					throw new Error('Invalid Connection');
 				}
 			}
@@ -396,7 +406,9 @@ describe('SimpleStore', () => {
 			TestStore.connect({})(InnerCmp);
 
 			expect(TestStore.buildConnectorCmp).toHaveBeenCalledTimes(1);
-			expect(TestStore.buildConnectorCmp).toHaveBeenLastCalledWith(InnerCmp);
+			expect(TestStore.buildConnectorCmp).toHaveBeenLastCalledWith(
+				InnerCmp
+			);
 		});
 
 		describe('No connectorCmp, No deriveStoreKeyFromProps', () => {
@@ -408,22 +420,27 @@ describe('SimpleStore', () => {
 			let update = null;
 
 			beforeEach(() => {
-				const Connector = TestStore.connect(propMap, storeProp)(InnerCmp);
+				const Connector = TestStore.connect(
+					propMap,
+					storeProp
+				)(InnerCmp);
 
-				testRenderer = TestRenderer.create((
+				testRenderer = TestRenderer.create(
 					<Connector extraProp={extraProp} />
-				));
+				);
 
 				update = () => {
-					testRenderer.update((
+					testRenderer.update(
 						<Connector extraProp={extraProp} updated />
-					));
+					);
 				};
 			});
 
 			test('passes same instance of the store to context, connector, and innerCmp', () => {
 				const context = testRenderer.root.findByType(StoreContext);
-				const connector = testRenderer.root.findByType(InstanceConnector);
+				const connector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 				const innerCmp = testRenderer.root.findByType(InnerCmp);
 
 				const contextStore = context.props.store;
@@ -437,7 +454,9 @@ describe('SimpleStore', () => {
 
 			test('renders the correct hierarchy (context > connector > innerCmp)', () => {
 				const context = testRenderer.root.findByType(StoreContext);
-				const connector = testRenderer.root.findByType(InstanceConnector);
+				const connector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 
 				const getChild = cmp => React.Children.only(cmp.props.children);
 
@@ -446,7 +465,9 @@ describe('SimpleStore', () => {
 			});
 
 			test('passes the correct prop map to the store connector', () => {
-				const connector = testRenderer.root.findByType(InstanceConnector);
+				const connector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 
 				expect(connector.props.propMap).toBe(propMap);
 			});
@@ -464,12 +485,16 @@ describe('SimpleStore', () => {
 			});
 
 			test('updates do not trigger a new store', () => {
-				const connector = testRenderer.root.findByType(InstanceConnector);
+				const connector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 				const store = connector.props.store;
 
 				update();
 
-				const updatedConnector = testRenderer.root.findByType(InstanceConnector);
+				const updatedConnector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 				const updatedStore = updatedConnector.props.store;
 
 				expect(store).toBe(updatedStore);
@@ -478,43 +503,41 @@ describe('SimpleStore', () => {
 
 		describe('No connectorCmp, with deriveStoreKeyFromProps', () => {
 			class KeyCmp extends React.Component {
-				static deriveStoreKeyFromProps (props) {
+				static deriveStoreKeyFromProps(props) {
 					return props.storeKey;
 				}
 
-				render () {
-					return (
-						<div>
-							Key Component
-						</div>
-					);
+				render() {
+					return <div>Key Component</div>;
 				}
 			}
 
 			test('passes store with correct key', () => {
 				const key = 'store-key';
 				const Connector = TestStore.connect({})(KeyCmp);
-				const testRenderer = TestRenderer.create((
+				const testRenderer = TestRenderer.create(
 					<Connector storeKey={key} />
-				));
+				);
 
-				const connector = testRenderer.root.findByType(InstanceConnector);
+				const connector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 
 				expect(connector.props.store.storeKey).toEqual(key);
 			});
 
 			test('updating the key passes a new store', () => {
 				const Connector = TestStore.connect({})(KeyCmp);
-				const testRenderer = TestRenderer.create((
+				const testRenderer = TestRenderer.create(
 					<Connector storeKey="store-key" />
-				));
+				);
 
-				const connector = testRenderer.root.findByType(InstanceConnector);
+				const connector = testRenderer.root.findByType(
+					InstanceConnector
+				);
 				const store = connector.props.store;
 
-				testRenderer.update((
-					<Connector storeKey="store-key-updated" />
-				));
+				testRenderer.update(<Connector storeKey="store-key-updated" />);
 
 				expect(connector.props.store).not.toBe(store);
 			});
@@ -522,42 +545,42 @@ describe('SimpleStore', () => {
 
 		describe('With connectorCmp', () => {
 			class Wrapper extends React.Component {
-				render () {
-					return (
-						<div {...this.props} />
-					);
+				render() {
+					return <div {...this.props} />;
 				}
 			}
 
 			class WrapperStore extends SimpleStore {
-				static buildConnectorCmp () {
+				static buildConnectorCmp() {
 					return Wrapper;
 				}
 			}
 
 			test('renders the connectorCmp with InstanceConnector and InnerCmp as component prop', () => {
 				const Connector = WrapperStore.connect({})(InnerCmp);
-				const testRenderer = TestRenderer.create((
-					<Connector />
-				));
+				const testRenderer = TestRenderer.create(<Connector />);
 
 				const getChild = cmp => React.Children.only(cmp.props.children);
 
 				const wrapperCmp = testRenderer.root.findByType(Wrapper);
-				const instanceConnectorCmp = testRenderer.root.findByType(InstanceConnector);
+				const instanceConnectorCmp = testRenderer.root.findByType(
+					InstanceConnector
+				);
 
 				expect(wrapperCmp).toBeDefined();
 
-				expect(getChild(wrapperCmp).type).toBe(instanceConnectorCmp.type);
+				expect(getChild(wrapperCmp).type).toBe(
+					instanceConnectorCmp.type
+				);
 				expect(instanceConnectorCmp.props.component).toBe(InnerCmp);
 			});
 
 			test('passes extraProps to the connectorCmp', () => {
 				const extraProp = 'extra-prop';
 				const Connector = WrapperStore.connect({})(InnerCmp);
-				const testRenderer = TestRenderer.create((
+				const testRenderer = TestRenderer.create(
 					<Connector extraProp={extraProp} />
-				));
+				);
 
 				const wrapperCmp = testRenderer.root.findByType(Wrapper);
 

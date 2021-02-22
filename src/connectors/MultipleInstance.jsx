@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {HOC} from '@nti/lib-commons';
+import { HOC } from '@nti/lib-commons';
 
-import {getPropsForMap, shouldUpdateForChange} from '../utils';
+import { getPropsForMap, shouldUpdateForChange } from '../utils';
 
 export default class MultipleInstanceConnector extends React.Component {
-	static connect (stores, propMap) {
-		return function decorator (Component) {
+	static connect(stores, propMap) {
+		return function decorator(Component) {
 			const cmp = React.forwardRef((props, ref) => (
 				<MultipleInstanceConnector
 					component={Component}
@@ -23,36 +23,31 @@ export default class MultipleInstanceConnector extends React.Component {
 		};
 	}
 
-
 	static propTypes = {
 		stores: PropTypes.arrayOf(
 			PropTypes.shape({
 				get: PropTypes.func.isRequired,
 				addChangeListener: PropTypes.func.isRequired,
-				removeChangeListener: PropTypes.func.isRequired
+				removeChangeListener: PropTypes.func.isRequired,
 			})
 		),
-		propMap: PropTypes.oneOfType([
-			PropTypes.object,
-			PropTypes.array
-		]),
+		propMap: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 		props: PropTypes.object,
 		component: PropTypes.any,
 		componentRef: PropTypes.any,
 
-		children: PropTypes.element
-	}
+		children: PropTypes.element,
+	};
 
-	constructor (props) {
+	constructor(props) {
 		super(props);
 
-		const {stores} = props;
+		const { stores } = props;
 
 		this.subscribe(stores);
 	}
 
-
-	componentWillUnmount () {
+	componentWillUnmount() {
 		this.unmounted = true;
 
 		if (this.unsubscribe) {
@@ -60,18 +55,16 @@ export default class MultipleInstanceConnector extends React.Component {
 		}
 	}
 
-
-	componentDidUpdate (prevProps) {
-		const {stores} = this.props;
-		const {stores: prevStores} = prevProps;
+	componentDidUpdate(prevProps) {
+		const { stores } = this.props;
+		const { stores: prevStores } = prevProps;
 
 		if (stores !== prevStores) {
 			this.subscribe(stores);
 		}
 	}
 
-
-	subscribe (stores) {
+	subscribe(stores) {
 		if (this.unsubscribe) {
 			this.unsubscribe();
 		}
@@ -89,8 +82,7 @@ export default class MultipleInstanceConnector extends React.Component {
 		};
 	}
 
-
-	onStoreChange = (change) => {
+	onStoreChange = change => {
 		if (this.unmounted) {
 			if (this.unsubscribe) {
 				this.unsubscribe();
@@ -102,9 +94,9 @@ export default class MultipleInstanceConnector extends React.Component {
 		if (shouldUpdateForChange(change, this.props.propMap)) {
 			this.forceUpdate();
 		}
-	}
+	};
 
-	render () {
+	render() {
 		const {
 			component,
 			componentRef: ref,
@@ -120,7 +112,7 @@ export default class MultipleInstanceConnector extends React.Component {
 			...storeProps,
 			...otherProps,
 			...props,
-			ref
+			ref,
 		};
 
 		return component

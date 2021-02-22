@@ -1,7 +1,7 @@
 export default class LoadTracker {
-	static Key = Symbol('Load Tracker Key')
+	static Key = Symbol('Load Tracker Key');
 
-	static for (target) {
+	static for(target) {
 		if (!target[LoadTracker.Key]) {
 			target[LoadTracker.Key] = new LoadTracker();
 		}
@@ -12,18 +12,18 @@ export default class LoadTracker {
 	#current = null;
 	#count = 0;
 
-	getId () {
+	getId() {
 		this.#count += 1;
 
 		return this.#count;
 	}
 
-	startTracker () {
+	startTracker() {
 		const id = this.getId();
 		this.#current = id;
 
 		return {
-			isCurrent: () => this.#current === id
+			isCurrent: () => this.#current === id,
 		};
 	}
 }

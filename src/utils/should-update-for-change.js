@@ -1,7 +1,7 @@
 import normalizePropMap from './normalize-prop-map';
 
-export default function shouldUpdateForChange (change = {}, propMap) {
-	const {type: changedTypes} = change;
+export default function shouldUpdateForChange(change = {}, propMap) {
+	const { type: changedTypes } = change;
 	const normalized = propMap && normalizePropMap(propMap);
 
 	if (!changedTypes) {
@@ -14,5 +14,7 @@ export default function shouldUpdateForChange (change = {}, propMap) {
 
 	const type = Array.isArray(changedTypes) ? changedTypes : [changedTypes];
 
-	return type.some(prop => Object.prototype.hasOwnProperty.call(normalized, prop));
+	return type.some(prop =>
+		Object.prototype.hasOwnProperty.call(normalized, prop)
+	);
 }

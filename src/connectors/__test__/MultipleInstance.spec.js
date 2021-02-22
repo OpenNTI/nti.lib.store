@@ -4,10 +4,10 @@ import TestRenderer from 'react-test-renderer';
 
 import MultipleInstanceConnector from '../MultipleInstance';
 
-import {InnerCmp, buildStore} from './Common';
+import { InnerCmp, buildStore } from './Common';
 
 class TestCmp extends React.Component {
-	render () {
+	render() {
 		return (
 			<MultipleInstanceConnector {...this.props}>
 				<InnerCmp />
@@ -19,7 +19,10 @@ class TestCmp extends React.Component {
 describe('Multiple Instance Connector', () => {
 	describe('connect', () => {
 		test('Connected component hoists statics', () => {
-			const connected = MultipleInstanceConnector.connect([], {})(InnerCmp);
+			const connected = MultipleInstanceConnector.connect(
+				[],
+				{}
+			)(InnerCmp);
 
 			expect(connected.staticMethod).toEqual(InnerCmp.staticMethod);
 		});
@@ -30,11 +33,14 @@ describe('Multiple Instance Connector', () => {
 
 			let innerCmpRef = null;
 
-			const Connected = MultipleInstanceConnector.connect(stores, propMap)(InnerCmp);
+			const Connected = MultipleInstanceConnector.connect(
+				stores,
+				propMap
+			)(InnerCmp);
 
-			const testRenderer = TestRenderer.create((
-				<Connected ref={x => innerCmpRef = x} />
-			));
+			const testRenderer = TestRenderer.create(
+				<Connected ref={x => (innerCmpRef = x)} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
@@ -42,18 +48,17 @@ describe('Multiple Instance Connector', () => {
 		});
 
 		test('Connected component renders the multiple instance connector with appropriate props', () => {
-			const stores = [
-				buildStore({}),
-				buildStore({}),
-				buildStore({})
-			];
+			const stores = [buildStore({}), buildStore({}), buildStore({})];
 			const propMap = {};
 
-			const Connected = MultipleInstanceConnector.connect(stores, propMap)(InnerCmp);
+			const Connected = MultipleInstanceConnector.connect(
+				stores,
+				propMap
+			)(InnerCmp);
 
-			const testRenderer = TestRenderer.create((
+			const testRenderer = TestRenderer.create(
 				<Connected extraProp="foo" />
-			));
+			);
 			const testRoot = testRenderer.root;
 
 			const connector = testRoot.findByType(MultipleInstanceConnector);
@@ -70,18 +75,11 @@ describe('Multiple Instance Connector', () => {
 
 	describe('High Order Component', () => {
 		test('Adds change listener to all stores and removes them on unmount', () => {
-			const stores = [
-				buildStore({}),
-				buildStore({}),
-				buildStore({})
-			];
+			const stores = [buildStore({}), buildStore({}), buildStore({})];
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					stores={stores}
-					propMap={{}}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp stores={stores} propMap={{}} />
+			);
 
 			for (let store of stores) {
 				expect(store.getListenerCount()).toEqual(1);
@@ -92,22 +90,35 @@ describe('Multiple Instance Connector', () => {
 			for (let store of stores) {
 				expect(store.getListenerCount()).toEqual(0);
 			}
-
 		});
 
 		test('Passes existing store props with correct hierarchy (last to first) on initial render', () => {
 			const stores = [
-				buildStore({store1: 'store1', sharedKey1: 'sharedKey1-1', sharedKey2: 'sharedKey2-1'}),
-				buildStore({store2: 'store2', sharedKey1: 'sharedKey1-2', sharedKey2: 'sharedKey2-2'}),
-				buildStore({store3: 'store3', sharedKey1: 'sharedKey1-3'})
+				buildStore({
+					store1: 'store1',
+					sharedKey1: 'sharedKey1-1',
+					sharedKey2: 'sharedKey2-1',
+				}),
+				buildStore({
+					store2: 'store2',
+					sharedKey1: 'sharedKey1-2',
+					sharedKey2: 'sharedKey2-2',
+				}),
+				buildStore({ store3: 'store3', sharedKey1: 'sharedKey1-3' }),
 			];
 
-			const testRenderer = TestRenderer.create((
+			const testRenderer = TestRenderer.create(
 				<TestCmp
 					stores={stores}
-					propMap={['store1', 'store2', 'store3', 'sharedKey1', 'sharedKey2']}
+					propMap={[
+						'store1',
+						'store2',
+						'store3',
+						'sharedKey1',
+						'sharedKey2',
+					]}
 				/>
-			));
+			);
 			const testRoot = testRenderer.root;
 
 			const innerCmp = testRoot.findByType(InnerCmp);
@@ -121,17 +132,14 @@ describe('Multiple Instance Connector', () => {
 
 		test('Passes new store props when any of the stores change', () => {
 			const stores = [
-				buildStore({key1: 'initial1'}),
-				buildStore({key2: 'initial2'}),
-				buildStore({key3: 'initial3'})
+				buildStore({ key1: 'initial1' }),
+				buildStore({ key2: 'initial2' }),
+				buildStore({ key3: 'initial3' }),
 			];
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					stores={stores}
-					propMap={['key1', 'key2', 'key3']}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp stores={stores} propMap={['key1', 'key2', 'key3']} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 
@@ -161,15 +169,12 @@ describe('Multiple Instance Connector', () => {
 			expect(innerCmp.props.key3).toEqual('updated3');
 		});
 
-		test('Doesn\'t update if the change event types aren\'t in the propMap', () => {
-			const stores = [buildStore({key1: 'initial'})];
+		test("Doesn't update if the change event types aren't in the propMap", () => {
+			const stores = [buildStore({ key1: 'initial' })];
 
-			const testRenderer = TestRenderer.create((
-				<TestCmp
-					stores={stores}
-					propMap={['key1']}
-				/>
-			));
+			const testRenderer = TestRenderer.create(
+				<TestCmp stores={stores} propMap={['key1']} />
+			);
 
 			const innerCmp = testRenderer.root.findByType(InnerCmp);
 

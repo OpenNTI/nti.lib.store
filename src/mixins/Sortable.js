@@ -1,15 +1,15 @@
-import {Load} from '../stores/Constants';
+import { Load } from '../stores/Constants';
 
 export default {
 	defaultSortProperty: null,
 	defaultSortDirection: null,
 
-	initMixin () {
+	initMixin() {
 		this.set('sortProperty', this.defaultSortProperty);
 		this.set('sortDirection', this.defaultSortDirection);
 	},
 
-	setSort (property, direction) {
+	setSort(property, direction) {
 		this.set('sortProperty', property);
 		this.set('sortDirection', direction);
 
@@ -22,8 +22,7 @@ export default {
 		this[Load]();
 	},
 
-
-	setSortProperty (property) {
+	setSortProperty(property) {
 		this.set('sortProperty', property);
 
 		if (this.applySort) {
@@ -35,8 +34,7 @@ export default {
 		this[Load]();
 	},
 
-
-	setSortDirection (direction) {
+	setSortDirection(direction) {
 		this.set('sortDirection', direction);
 
 		if (this.applySort) {
@@ -48,13 +46,11 @@ export default {
 		this[Load]();
 	},
 
-
-	get sortProperty () {
+	get sortProperty() {
 		return this.get('sortProperty') || this.defaultSortProperty;
 	},
 
-
-	get sortDirection () {
+	get sortDirection() {
 		return this.get('sortDirection') || this.defaultSortDirection;
-	}
+	},
 };

@@ -9,14 +9,16 @@ const onStoreChange = Symbol('StoreChangedEventHandlerMapper');
 const handlerMapKey = 'backingStoreEventHandlers';
 
 export default {
-
-	registerStoreEventHandler (eventId, handlerId) {
-		if (!Object.prototype.hasOwnProperty.call(this,handlerMapKey)) {
+	registerStoreEventHandler(eventId, handlerId) {
+		if (!Object.prototype.hasOwnProperty.call(this, handlerMapKey)) {
 			this[handlerMapKey] = Object.create(this[getHandlers]({}) || {});
 		}
 
 		if (!eventId) {
-			logger.error('eventId is %o. Are you using an undefined constant?', eventId);
+			logger.error(
+				'eventId is %o. Are you using an undefined constant?',
+				eventId
+			);
 		}
 
 		let map = this[getHandlers]();
@@ -25,51 +27,50 @@ export default {
 			let handlers = makeSet(map[eventId]);
 			handlers.add(handlerId);
 			map[eventId] = handlers;
-		}
-		else {
+		} else {
 			map[eventId] = handlerId;
 		}
 	},
 
-
-	registerStoreEventHandlers (eventIdToHandlerMap) {
-		let eventIds = Object.getOwnPropertyNames(eventIdToHandlerMap)
-			.concat(Object.getOwnPropertySymbols(eventIdToHandlerMap));
+	registerStoreEventHandlers(eventIdToHandlerMap) {
+		let eventIds = Object.getOwnPropertyNames(eventIdToHandlerMap).concat(
+			Object.getOwnPropertySymbols(eventIdToHandlerMap)
+		);
 
 		for (let eventId of eventIds) {
-			this.registerStoreEventHandler(eventId, eventIdToHandlerMap[eventId]);
+			this.registerStoreEventHandler(
+				eventId,
+				eventIdToHandlerMap[eventId]
+			);
 		}
 	},
 
-
-	// eslint-disable-next-line camelcase
-	UNSAFE_componentWillMount () {
+	UNSAFE_componentWillMount() {
 		this[getStore] = getKey.bind(this, 'backingStore');
 		this[getHandlers] = getKey.bind(this, handlerMapKey);
 		this[onStoreChange] = onStoreChangeImpl.bind(this);
 	},
 
-	componentDidMount () {
+	componentDidMount() {
 		let store = this[getStore]();
 		if (store) {
 			store.addChangeListener(this[onStoreChange]);
 		}
 	},
 
-	componentWillUnmount () {
+	componentWillUnmount() {
 		let store = this[getStore]();
 		if (store) {
 			store.removeChangeListener(this[onStoreChange]);
 		}
-	}
+	},
 };
 
-
-function makeSet (item) {
-	return (!item || item instanceof Set) ? item : new Set([item]);
+function makeSet(item) {
+	return !item || item instanceof Set ? item : new Set([item]);
 }
 
-function getName () {
+function getName() {
 	try {
 		return this.constructor.displayName;
 	} catch (e) {
@@ -77,17 +78,19 @@ function getName () {
 	}
 }
 
-
-function getKey (key, fallbackAndDontWarn) {
+function getKey(key, fallbackAndDontWarn) {
 	let componentName = getName.call(this);
-	return this[key] || fallbackAndDontWarn || logger.error('%s property not set in: %s', key, componentName);
+	return (
+		this[key] ||
+		fallbackAndDontWarn ||
+		logger.error('%s property not set in: %s', key, componentName)
+	);
 }
 
-
-function onStoreChangeImpl (event) {
+function onStoreChangeImpl(event) {
 	if (typeof event === 'string') {
 		logger.error('Wrapping deprecated string event into object: %s', event);
-		event = {type: event};
+		event = { type: event };
 	}
 
 	if (!event || event.type == null) {
@@ -104,7 +107,11 @@ function onStoreChangeImpl (event) {
 	for (let handler of handlerSet) {
 		if (typeof handler !== 'function') {
 			if (!this[handler]) {
-				logger.debug('Event Handler %s does not exist in component: %s', handler, componentName);
+				logger.debug(
+					'Event Handler %s does not exist in component: %s',
+					handler,
+					componentName
+				);
 				return;
 			}
 			handler = this[handler];

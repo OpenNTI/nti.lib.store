@@ -1,4 +1,4 @@
-import {Load} from '../stores/Constants';
+import { Load } from '../stores/Constants';
 
 const SearchTimeout = Symbol('SearchTimeout');
 const SearchBuffering = Symbol('SearchBuffering');
@@ -7,13 +7,15 @@ export default {
 	isSearchable: true,
 	defaultSearchTerm: null,
 
-	initMixin () {
+	initMixin() {
 		this.set('searchTerm', this.defaultSearchTerm);
 
 		if (this.addPropsChangeListener) {
-			this.addPropsChangeListener((props) => {
+			this.addPropsChangeListener(props => {
 				if (props.searchTerm !== this.searchTerm) {
-					this.updateSearchTerm(props.searchTerm || this.defaultSearchTerm);
+					this.updateSearchTerm(
+						props.searchTerm || this.defaultSearchTerm
+					);
 				}
 			});
 		}
@@ -21,7 +23,7 @@ export default {
 
 	SEARCH_BUFFER: 300,
 
-	setSearchTerm (term) {
+	setSearchTerm(term) {
 		this.set('searchTerm', term);
 
 		if (this.applySearchTerm) {
@@ -31,17 +33,15 @@ export default {
 		}
 	},
 
-
-	get searchTerm () {
+	get searchTerm() {
 		return this.get('searchTerm') || this.defaultSearchTerm;
 	},
 
-	get isBufferingSearch () {
+	get isBufferingSearch() {
 		return this[SearchBuffering];
 	},
 
-
-	updateSearchTerm (term) {
+	updateSearchTerm(term) {
 		this.setSearchTerm(term);
 
 		this[SearchBuffering] = true;
@@ -56,5 +56,5 @@ export default {
 				this[Load]();
 			}, this.SEARCH_BUFFER);
 		}
-	}
+	},
 };

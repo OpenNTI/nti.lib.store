@@ -1,4 +1,4 @@
-function convertArray (props) {
+function convertArray(props) {
 	return props.reduce((acc, prop) => {
 		acc[prop] = prop;
 
@@ -6,7 +6,7 @@ function convertArray (props) {
 	}, {});
 }
 
-export default function normalizePropMap (propMap) {
+export default function normalizePropMap(propMap) {
 	if (propMap instanceof Set) {
 		return convertArray([...propMap]);
 	}
