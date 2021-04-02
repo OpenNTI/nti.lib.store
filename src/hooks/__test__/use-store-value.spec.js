@@ -10,7 +10,24 @@ describe('useStoreValue Tests', () => {
 		const dummyStore = {
 			addChangeListener: jest.fn(),
 			removeChangeListener: jest.fn(),
-			get: name => (name === 'someProperty' ? 'foo' : undefined),
+			get: name => (name === 'someProperty' ? 'foo' : dummyStore[name]),
+			[Symbol.iterator]() {
+				const snapshot = [1, 2, 3];
+				const { length } = snapshot;
+				let index = 0;
+
+				return {
+					[Symbol.iterator]() {
+						return this;
+					},
+					next() {
+						const done = index >= length;
+						const value = snapshot[index++];
+
+						return { value, done };
+					},
+				};
+			},
 		};
 
 		const { result } = renderHook(() => {
@@ -18,12 +35,19 @@ describe('useStoreValue Tests', () => {
 			return {
 				intermediate,
 				someProperty: intermediate.someProperty,
+				iterator: intermediate[Symbol.iterator],
 			};
 		});
 		expect(result.current.intermediate).toBeTruthy();
 		expect(result.current.someProperty).toBe('foo');
+		expect(result.current.iterator).toEqual(expect.any(Function));
+		expect(result.current.iterator.source).toBe(
+			dummyStore[Symbol.iterator].toString()
+		);
 
 		expect(() => result.current.intermediate.someProperty).toThrow();
+
+		expect(Array.from(result.current.iterator())).toEqual([1, 2, 3]);
 	});
 
 	test('Spreading the proxy throws an error', async () => {

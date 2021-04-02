@@ -8,7 +8,12 @@ export default function getBoundFunction(fn, scope) {
 	const cache = BOUND_MAP.get(scope);
 
 	if (!cache.has(fn)) {
-		cache.set(fn, fn.bind(scope));
+		cache.set(
+			fn,
+			Object.assign(fn.bind(scope), {
+				source: fn.source || fn.toString(),
+			})
+		);
 	}
 
 	return cache.get(fn);

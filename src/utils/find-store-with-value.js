@@ -4,7 +4,7 @@ export const ReverseIterator = x => {
 	const buffer = [...x];
 	let index = buffer.length;
 	return {
-		[Symbol.iterator]: function () {
+		[Symbol.iterator]() {
 			return this;
 		},
 		next() {
