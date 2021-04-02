@@ -8,6 +8,7 @@ import { HOC } from '@nti/lib-commons';
 import { Instance as InstanceConnector } from '../connectors';
 import ContextWrapper from '../Context';
 import { useMonitor, useStoreValue } from '../hooks';
+import { useResolvedStore } from '../hooks/resolve-store';
 
 import { ChangeEvent, Load } from './Constants';
 
@@ -85,6 +86,8 @@ export default class SimpleStore extends EventEmitter {
 
 	static validateConnection(Component) {}
 
+	// eslint-disable-next-line valid-jsdoc
+	/** @deprecated use the `useValue` hook instead */
 	static useMonitor(propMap) {
 		const instance = this;
 		return useMonitor(propMap, s => s instanceof instance);
@@ -97,6 +100,20 @@ export default class SimpleStore extends EventEmitter {
 			[StoreClass]
 		);
 		return useStoreValue(selector);
+	}
+
+	/**
+	 * For those times when you really need the store itself. (maybe you
+	 * are trying to iterate it using the iterator protocol??)
+	 * @returns {Store}
+	 */
+	static useRef() {
+		const StoreClass = this;
+		const selector = React.useMemo(
+			() => store => store instanceof StoreClass,
+			[StoreClass]
+		);
+		return useResolvedStore(selector)?.[0];
 	}
 
 	static monitor(propMap = {}, storeProp = 'store') {
