@@ -11,5 +11,6 @@ export * as Stores from './stores';
 export * as Connectors from './connectors';
 export { default as Interfaces } from './interfaces';
 export * as Mixins from './mixins';
+export * from './hooks/index.js';
 
 export { FakeStore } from './Context';
