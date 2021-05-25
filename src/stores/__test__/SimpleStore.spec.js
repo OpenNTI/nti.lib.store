@@ -140,8 +140,8 @@ describe('SimpleStore', () => {
 				store.emitChangeTimeout = 300;
 
 				store.emitChange('type');
-				expect(clearImmediate).toHaveBeenCalledTimes(1);
-				expect(clearImmediate).toHaveBeenLastCalledWith(300);
+				expect(clearTimeout).toHaveBeenCalledTimes(1);
+				expect(clearTimeout).toHaveBeenLastCalledWith(300);
 			});
 
 			test('emitChange fires the change event with the arguments as the type', () => {
@@ -347,7 +347,7 @@ describe('SimpleStore', () => {
 				);
 			});
 
-			test('Passing no key returns a new instance everytime', () => {
+			test('Passing no key returns a new instance every time', () => {
 				class TestStore extends SimpleStore {}
 
 				expect(TestStore.getStore()).toBeInstanceOf(TestStore);
