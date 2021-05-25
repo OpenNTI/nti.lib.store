@@ -97,7 +97,7 @@ describe('SimpleStore', () => {
 
 				store.set('key', 'value');
 
-				expect(setImmediate).toHaveBeenCalled();
+				expect(setTimeout).toHaveBeenCalled();
 			});
 
 			test('only starts one timeout at a time', () => {
@@ -106,7 +106,7 @@ describe('SimpleStore', () => {
 				store.set('key', 'value');
 				store.set('foo', 'bar');
 
-				expect(setImmediate).toHaveBeenCalledTimes(1);
+				expect(setTimeout).toHaveBeenCalledTimes(1);
 			});
 
 			test('calls emitChange with all the keys that have been changed', () => {
@@ -281,7 +281,7 @@ describe('SimpleStore', () => {
 
 				store[Load]();
 
-				expect(setImmediate).not.toHaveBeenCalled();
+				expect(setTimeout).not.toHaveBeenCalled();
 			});
 
 			test('only calls load once if [Load] is called in quick succession', () => {
@@ -438,9 +438,8 @@ describe('SimpleStore', () => {
 
 			test('passes same instance of the store to context, connector, and innerCmp', () => {
 				const context = testRenderer.root.findByType(StoreContext);
-				const connector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const connector =
+					testRenderer.root.findByType(InstanceConnector);
 				const innerCmp = testRenderer.root.findByType(InnerCmp);
 
 				const contextStore = context.props.store;
@@ -454,9 +453,8 @@ describe('SimpleStore', () => {
 
 			test('renders the correct hierarchy (context > connector > innerCmp)', () => {
 				const context = testRenderer.root.findByType(StoreContext);
-				const connector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const connector =
+					testRenderer.root.findByType(InstanceConnector);
 
 				const getChild = cmp => React.Children.only(cmp.props.children);
 
@@ -465,9 +463,8 @@ describe('SimpleStore', () => {
 			});
 
 			test('passes the correct prop map to the store connector', () => {
-				const connector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const connector =
+					testRenderer.root.findByType(InstanceConnector);
 
 				expect(connector.props.propMap).toBe(propMap);
 			});
@@ -485,16 +482,14 @@ describe('SimpleStore', () => {
 			});
 
 			test('updates do not trigger a new store', () => {
-				const connector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const connector =
+					testRenderer.root.findByType(InstanceConnector);
 				const store = connector.props.store;
 
 				update();
 
-				const updatedConnector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const updatedConnector =
+					testRenderer.root.findByType(InstanceConnector);
 				const updatedStore = updatedConnector.props.store;
 
 				expect(store).toBe(updatedStore);
@@ -519,9 +514,8 @@ describe('SimpleStore', () => {
 					<Connector storeKey={key} />
 				);
 
-				const connector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const connector =
+					testRenderer.root.findByType(InstanceConnector);
 
 				expect(connector.props.store.storeKey).toEqual(key);
 			});
@@ -532,9 +526,8 @@ describe('SimpleStore', () => {
 					<Connector storeKey="store-key" />
 				);
 
-				const connector = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const connector =
+					testRenderer.root.findByType(InstanceConnector);
 				const store = connector.props.store;
 
 				testRenderer.update(<Connector storeKey="store-key-updated" />);
@@ -563,9 +556,8 @@ describe('SimpleStore', () => {
 				const getChild = cmp => React.Children.only(cmp.props.children);
 
 				const wrapperCmp = testRenderer.root.findByType(Wrapper);
-				const instanceConnectorCmp = testRenderer.root.findByType(
-					InstanceConnector
-				);
+				const instanceConnectorCmp =
+					testRenderer.root.findByType(InstanceConnector);
 
 				expect(wrapperCmp).toBeDefined();
 

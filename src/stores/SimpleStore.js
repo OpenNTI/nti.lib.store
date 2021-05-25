@@ -68,17 +68,18 @@ export default class SimpleStore extends EventEmitter {
 
 		this[Instances][key].count--;
 
-		setImmediate(() => {
+		setTimeout(() => {
 			if (this[Instances][key].count <= 0) {
 				delete this[Instances][key];
 			}
-		});
+		}, 0);
 	}
 
 	/**
 	 * Create a component to render around the InstanceConnector
 	 * it MUST render its children!
 	 *
+	 * @abstract
 	 * @param  {Object} Component the class of the component that is being connected
 	 * @returns {Object}           the wrapper component to render
 	 */
@@ -87,7 +88,11 @@ export default class SimpleStore extends EventEmitter {
 	static validateConnection(Component) {}
 
 	// eslint-disable-next-line valid-jsdoc
-	/** @deprecated use the `useValue` hook instead */
+	/**
+	 * @param {Object} propMap
+	 * @deprecated use the `useValue` hook instead
+	 * @returns {*}
+	 */
 	static useMonitor(propMap) {
 		const instance = this;
 		return useMonitor(propMap, s => s instanceof instance);
@@ -107,7 +112,8 @@ export default class SimpleStore extends EventEmitter {
 	/**
 	 * For those times when you really need the store itself. (maybe you
 	 * are trying to iterate it using the iterator protocol??)
-	 * @returns {Store}
+	 *
+	 * @returns {SimpleStore}
 	 */
 	static useRef() {
 		const StoreClass = this;
@@ -361,6 +367,7 @@ export default class SimpleStore extends EventEmitter {
 
 	/**
 	 * Set store value(s) and emit change events immediately.
+	 *
 	 * @param {string | Object} key - String to store value under, or a mapping of properties to be stored
 	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
 	 * @returns {void}
@@ -371,6 +378,7 @@ export default class SimpleStore extends EventEmitter {
 
 	/**
 	 * Set store value(s). Change events may be deferred to allow multiple calls without triggering excessive updates.
+	 *
 	 * @param {string | Object} key - A string under which to store value; or a mapping of properties to be stored
 	 * @param {*} value - The value to be stored if key is a string, otherwise ignored.
 	 * @returns {void}
@@ -384,13 +392,13 @@ export default class SimpleStore extends EventEmitter {
 			return;
 		}
 
-		this.emitChangeTimeout = setImmediate(() => {
+		this.emitChangeTimeout = setTimeout(() => {
 			this.emitChange(...args);
-		});
+		}, 0);
 	}
 
 	emitChange(changedType) {
-		clearImmediate(this.emitChangeTimeout);
+		clearTimeout(this.emitChangeTimeout);
 		delete this.emitChangeTimeout;
 
 		if (!changedType) {
@@ -425,11 +433,10 @@ export default class SimpleStore extends EventEmitter {
 		}
 
 		if (!this[LoadTimeout]) {
-			this[LoadTimeout] = setImmediate(() => {
-				// window.setImmediate, not this.setImmediate
+			this[LoadTimeout] = setTimeout(() => {
 				this.load();
 				delete this[LoadTimeout];
-			});
+			}, 0);
 		}
 	}
 }
