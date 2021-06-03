@@ -93,6 +93,7 @@ describe('SimpleStore', () => {
 			});
 
 			test('starts a timeout', () => {
+				jest.spyOn(window, 'setTimeout');
 				const store = new TestStore();
 
 				store.set('key', 'value');
@@ -101,6 +102,7 @@ describe('SimpleStore', () => {
 			});
 
 			test('only starts one timeout at a time', () => {
+				jest.spyOn(window, 'setTimeout');
 				const store = new TestStore();
 
 				store.set('key', 'value');
@@ -135,6 +137,8 @@ describe('SimpleStore', () => {
 			});
 
 			test('emitChange cancels the emitChangeTimeout', () => {
+				jest.spyOn(window, 'setTimeout');
+				jest.spyOn(window, 'clearTimeout');
 				const store = new TestStore();
 
 				store.emitChangeTimeout = 300;
@@ -277,6 +281,7 @@ describe('SimpleStore', () => {
 			});
 
 			test('if load is not defined on the subclass [Load] does nothing', () => {
+				jest.spyOn(window, 'setTimeout');
 				const store = new TestStore();
 
 				store[Load]();
@@ -358,6 +363,14 @@ describe('SimpleStore', () => {
 
 	//Yes this is a static, but I figured it was complicated enough to warrant its own block
 	describe('connect', () => {
+		beforeEach(() => {
+			jest.useFakeTimers();
+		});
+
+		afterEach(() => {
+			jest.useRealTimers();
+		});
+
 		class TestStore extends SimpleStore {}
 
 		class InnerCmp extends React.Component {
