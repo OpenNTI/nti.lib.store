@@ -7,7 +7,7 @@ import { HOC } from '@nti/lib-commons';
 
 import { Instance as InstanceConnector } from '../connectors';
 import ContextWrapper from '../Context';
-import { useMonitor, useStoreValue } from '../hooks';
+import { useStoreValue } from '../hooks';
 import { useResolvedStore } from '../hooks/resolve-store';
 
 import { ChangeEvent, Load } from './Constants';
@@ -86,17 +86,6 @@ export default class SimpleStore extends EventEmitter {
 	static buildConnectorCmp(Component) {}
 
 	static validateConnection(Component) {}
-
-	// eslint-disable-next-line valid-jsdoc
-	/**
-	 * @param {Object} propMap
-	 * @deprecated use the `useValue` hook instead
-	 * @returns {*}
-	 */
-	static useMonitor(propMap) {
-		const instance = this;
-		return useMonitor(propMap, s => s instanceof instance);
-	}
 
 	static useValue(storePredicate) {
 		const StoreClass = this;
