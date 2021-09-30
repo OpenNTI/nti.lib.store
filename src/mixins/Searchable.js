@@ -10,15 +10,16 @@ export default {
 	initMixin() {
 		this.set('searchTerm', this.defaultSearchTerm);
 
-		if (this.addPropsChangeListener) {
-			this.addPropsChangeListener(props => {
-				if (props.searchTerm !== this.searchTerm) {
-					this.updateSearchTerm(
-						props.searchTerm || this.defaultSearchTerm
-					);
-				}
-			});
-		}
+		this.addPropsChangeListener?.(props => {
+			// normalize falsy values
+			const A = props.searchTerm || null;
+			const B = this.searchTerm || null;
+			if (A !== B) {
+				this.updateSearchTerm(
+					props.searchTerm || this.defaultSearchTerm
+				);
+			}
+		});
 	},
 
 	SEARCH_BUFFER: 300,
