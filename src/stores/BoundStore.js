@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { equals } from '@nti/lib-commons';
+
 import SimpleStore from './SimpleStore';
 import { PropsChangeEvent, Load } from './Constants';
 
@@ -73,7 +75,8 @@ export default class BoundStore extends SimpleStore {
 	}
 
 	bindingDidUpdate(prevBinding) {
-		return this[Binding] !== prevBinding;
+		// do a shallow equality test on the keys of "binding"
+		return !equals(this[Binding], prevBinding);
 	}
 
 	[SetBinding](binding) {
