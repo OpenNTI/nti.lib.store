@@ -33,6 +33,7 @@ FakeStore.propTypes = {
 };
 /**
  * Mock Store for tests
+ *
  * @param {Object} props - props
  * @param {Object} props.mock - The Mock store implementation
  * @param {*} props.children - The children the mock store is for
