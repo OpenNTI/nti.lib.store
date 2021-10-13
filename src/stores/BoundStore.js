@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { equals } from '@nti/lib-commons';
@@ -24,7 +24,7 @@ export default class BoundStore extends SimpleStore {
 
 		store?.[SetBinding](binding);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			store?.onPropsChange(props, Cmp);
 		});
 	}

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import React from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { HOC } from '@nti/lib-commons';
@@ -89,7 +89,7 @@ export default class SimpleStore extends EventEmitter {
 
 	static useValue(storePredicate) {
 		const StoreClass = this;
-		const selector = React.useMemo(
+		const selector = useMemo(
 			() => store =>
 				store instanceof StoreClass &&
 				(!storePredicate || storePredicate(store)),
@@ -106,7 +106,7 @@ export default class SimpleStore extends EventEmitter {
 	 */
 	static useRef() {
 		const StoreClass = this;
-		const selector = React.useMemo(
+		const selector = useMemo(
 			() => store => store instanceof StoreClass,
 			[StoreClass]
 		);
@@ -130,7 +130,7 @@ export default class SimpleStore extends EventEmitter {
 		return Component => {
 			const name = 'StoreMonitor';
 			const MonitorWrapper = (props, ref) => {
-				const { stores } = React.useContext(ContextWrapper.Context);
+				const { stores } = useContext(ContextWrapper.Context);
 				const store = getClosestStore(stores);
 
 				if (!store) {
@@ -173,13 +173,13 @@ export default class SimpleStore extends EventEmitter {
 
 		function WrappedCmp(props, ref) {
 			const key = getStoreKey(props);
-			const initial = React.useRef(true);
+			const initial = useRef(true);
 
-			const [store, setStore] = React.useState(getStore(key));
+			const [store, setStore] = useState(getStore(key));
 			// TODO: check context for another instance and no-op if found & this.Singleton == true
-			// const {stores} = React.useContext(ContextWrapper.Context);
+			// const {stores} = useContext(ContextWrapper.Context);
 
-			React.useEffect(() => {
+			useEffect(() => {
 				if (initial.current) {
 					initial.current = false;
 					return;
